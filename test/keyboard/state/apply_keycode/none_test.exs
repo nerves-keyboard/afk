@@ -21,11 +21,15 @@ defmodule Keyboard.State.ApplyKeycode.NoneTest do
     @layer_0
   ]
 
-  test "pressing a none keycode does nothing" do
+  test "pressing and releasing a none keycode does nothing" do
     state =
       @keymap
       |> State.new()
       |> State.press_key(:k001)
+
+    assert_6kr(state, [0, 0, 0, 0, 0, 0])
+
+    state = State.release_key(state, :k001)
 
     assert_6kr(state, [0, 0, 0, 0, 0, 0])
   end
