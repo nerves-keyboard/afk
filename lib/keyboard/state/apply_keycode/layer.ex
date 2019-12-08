@@ -1,5 +1,7 @@
 defimpl Keyboard.State.ApplyKeycode, for: Keyboard.Keycodes.Layer do
-  def apply_keycode(layer_keycode, state, key) do
+  alias Keyboard.Keycodes.Layer
+
+  def apply_keycode(%Layer{type: :hold} = layer_keycode, state, key) do
     layers =
       state.layers
       |> Enum.reverse()
@@ -10,7 +12,7 @@ defimpl Keyboard.State.ApplyKeycode, for: Keyboard.Keycodes.Layer do
     %{state | layers: layers}
   end
 
-  def unapply_keycode(layer_keycode, state, key) do
+  def unapply_keycode(%Layer{type: :hold} = layer_keycode, state, key) do
     layer =
       state.layers
       |> Enum.reverse()
