@@ -25,7 +25,7 @@ defmodule AFK.Keycodes.Layer do
       iex> new(:default, 2)
       %AFK.Keycodes.Layer{layer: 2, type: :default}
   """
-  def new(type, layer) when type in ~w(hold toggle default)a do
+  def new(type, layer) when type in ~w(hold toggle default)a and is_integer(layer) and layer >= 0 do
     struct!(__MODULE__,
       type: type,
       layer: layer
