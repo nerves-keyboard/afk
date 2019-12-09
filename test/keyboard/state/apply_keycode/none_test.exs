@@ -4,7 +4,7 @@ defmodule AFK.State.ApplyKeycode.NoneTest do
   alias AFK.State
   alias AFK.Keycodes.{Key, None}
 
-  @a Key.from_id!(:a)
+  @a Key.new(:a)
   @none %None{}
 
   @layer_0 %{

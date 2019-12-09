@@ -4,16 +4,16 @@ defmodule AFK.State.ApplyKeycode.LayerTest do
   alias AFK.State
   alias AFK.Keycodes.{Key, Layer, None, Transparent}
 
-  @q Key.from_id!(:q)
-  @w Key.from_id!(:w)
-  @e Key.from_id!(:e)
+  @q Key.new(:q)
+  @w Key.new(:w)
+  @e Key.new(:e)
 
-  @a Key.from_id!(:a)
-  @s Key.from_id!(:s)
+  @a Key.new(:a)
+  @s Key.new(:s)
 
-  @z Key.from_id!(:z)
+  @z Key.new(:z)
 
-  @one Key.from_id!(:"1")
+  @one Key.new(:"1")
 
   @none %None{}
   @transparent %Transparent{}

@@ -4,15 +4,15 @@ defmodule AFK.State.ApplyKeycode.KeyTest do
   alias AFK.State
   alias AFK.Keycodes.Key
 
-  @a Key.from_id!(:a)
-  @s Key.from_id!(:s)
-  @d Key.from_id!(:d)
-  @f Key.from_id!(:f)
-  @g Key.from_id!(:g)
-  @h Key.from_id!(:h)
-  @j Key.from_id!(:j)
-  @k Key.from_id!(:k)
-  @l Key.from_id!(:l)
+  @a Key.new(:a)
+  @s Key.new(:s)
+  @d Key.new(:d)
+  @f Key.new(:f)
+  @g Key.new(:g)
+  @h Key.new(:h)
+  @j Key.new(:j)
+  @k Key.new(:k)
+  @l Key.new(:l)
 
   @layer_0 %{
     k001: @a,

@@ -1,42 +1,29 @@
 defmodule AFK.Keycodes.Modifier do
-  @enforce_keys [:id, :value]
-  defstruct [:id, :value]
+  @moduledoc """
+  TODO
+  """
 
-  @modifiers [
-    {0x01, :left_control},
-    {0x02, :left_shift},
-    {0x04, :left_alt},
-    {0x08, :left_super},
-    {0x10, :right_control},
-    {0x20, :right_shift},
-    {0x40, :right_alt},
-    {0x80, :right_super}
-  ]
+  @enforce_keys [:modifier]
+  defstruct [:modifier]
 
   @doc """
-  Gets a modifier keycode by its ID.
-
-  A modifier ID is an `Atom`, e.g. `:left_control`. This function returns a
-  modifier keycode by a given ID.
+  Creates a basic modifier keycode struct.
 
   ## Examples
 
-      iex> from_id!(:left_control)
-      %AFK.Keycodes.Modifier{id: :left_control, value: 1}
+      iex> new(:left_control)
+      %AFK.Keycodes.Modifier{modifier: :left_control}
 
-      iex> from_id!(:right_super)
-      %AFK.Keycodes.Modifier{id: :right_super, value: 128}
+      iex> new(:right_super)
+      %AFK.Keycodes.Modifier{modifier: :right_super}
   """
-  def from_id!(id)
-
-  for {value, id} <- @modifiers do
-    def from_id!(unquote(id)) do
-      struct!(__MODULE__,
-        id: unquote(id),
-        value: unquote(value)
-      )
-    end
+  for {_value, modifier} <- AFK.Scancodes.modifiers() do
+    def new(unquote(modifier)), do: struct!(__MODULE__, modifier: unquote(modifier))
   end
 
-  def from_id!(id), do: raise("Invalid Modifier ID: #{id}")
+  defimpl AFK.Keycodes.HIDValue do
+    for {value, modifier} <- AFK.Scancodes.modifiers() do
+      def hid_value(%AFK.Keycodes.Modifier{modifier: unquote(modifier)}), do: unquote(value)
+    end
+  end
 end

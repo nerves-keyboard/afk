@@ -4,14 +4,14 @@ defmodule AFK.State.ApplyKeycode.ModifierTest do
   alias AFK.State
   alias AFK.Keycodes.Modifier
 
-  @left_control Modifier.from_id!(:left_control)
-  @left_shift Modifier.from_id!(:left_shift)
-  @left_alt Modifier.from_id!(:left_alt)
-  @left_super Modifier.from_id!(:left_super)
-  @right_control Modifier.from_id!(:right_control)
-  @right_shift Modifier.from_id!(:right_shift)
-  @right_alt Modifier.from_id!(:right_alt)
-  @right_super Modifier.from_id!(:right_super)
+  @left_control Modifier.new(:left_control)
+  @left_shift Modifier.new(:left_shift)
+  @left_alt Modifier.new(:left_alt)
+  @left_super Modifier.new(:left_super)
+  @right_control Modifier.new(:right_control)
+  @right_shift Modifier.new(:right_shift)
+  @right_alt Modifier.new(:right_alt)
+  @right_super Modifier.new(:right_super)
 
   @layer_0 %{
     k001: @left_control,

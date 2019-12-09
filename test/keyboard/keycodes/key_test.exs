@@ -6,8 +6,8 @@ defmodule AFK.Keycodes.KeyTest do
   doctest Key, import: true
 
   test "raises if non-existent key ID is given" do
-    assert_raise RuntimeError, fn ->
-      Key.from_id!(:fake)
+    assert_raise FunctionClauseError, fn ->
+      Key.new(:fake)
     end
   end
 end
