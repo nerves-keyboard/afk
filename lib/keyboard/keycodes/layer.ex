@@ -15,8 +15,11 @@ defmodule Keyboard.Keycodes.Layer do
 
       iex> new(:hold, 2)
       %Keyboard.Keycodes.Layer{layer: 2, type: :hold}
+
+      iex> new(:toggle, 1)
+      %Keyboard.Keycodes.Layer{layer: 1, type: :toggle}
   """
-  def new(:hold = type, layer) do
+  def new(type, layer) when type in ~w(hold toggle)a do
     struct!(__MODULE__,
       type: type,
       layer: layer

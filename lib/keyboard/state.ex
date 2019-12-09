@@ -15,32 +15,22 @@ defmodule Keyboard.State do
 
   use Bitwise
 
-  alias Keyboard.State.ApplyKeycode
+  alias Keyboard.State.{ApplyKeycode, Keymap}
   alias Keyboard.Keycodes.{None, Transparent}
 
-  defstruct keys: %{},
-            layers: [],
-            modifiers: %{},
-            six_keys: [nil, nil, nil, nil, nil, nil]
+  @enforce_keys [:keys, :keymap, :modifiers, :six_keys]
+  defstruct [:keys, :keymap, :modifiers, :six_keys]
 
   @doc """
   Returns a new state struct initialized with the given keymap.
   """
   def new(keymap) do
-    layers =
-      keymap
-      |> Enum.map(fn layer ->
-        %{
-          active: false,
-          activations: %{},
-          layer: layer
-        }
-      end)
-      |> put_in([Access.at(0), :active], true)
-      |> put_in([Access.at(0), :activations, :default], true)
-      |> Enum.reverse()
-
-    struct!(__MODULE__, layers: layers)
+    struct!(__MODULE__,
+      keys: %{},
+      keymap: Keymap.new(keymap),
+      modifiers: %{},
+      six_keys: [nil, nil, nil, nil, nil, nil]
+    )
   end
 
   @doc """
@@ -49,18 +39,10 @@ defmodule Keyboard.State do
   def press_key(%__MODULE__{} = state, key) do
     if Map.has_key?(state.keys, key), do: raise("Already pressed key pressed again! #{key}")
 
-    keycode = find_keycode(state.layers, key)
+    keycode = Keymap.find_keycode(state.keymap, key)
     state = %{state | keys: Map.put(state.keys, key, keycode)}
 
     ApplyKeycode.apply_keycode(keycode, state, key)
-  end
-
-  defp find_keycode(layers, key) do
-    Enum.find_value(layers, %None{}, fn
-      %{active: true, layer: %{^key => %Transparent{}}} -> false
-      %{active: true, layer: %{^key => keycode}} -> keycode
-      _else -> false
-    end)
   end
 
   @doc """
