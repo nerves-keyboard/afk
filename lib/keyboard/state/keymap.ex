@@ -1,9 +1,9 @@
-defmodule Keyboard.State.Keymap do
+defmodule AFK.State.Keymap do
   @moduledoc """
   Internal keymap layer state struct
   """
 
-  alias Keyboard.Keycodes.{Layer, None, Transparent}
+  alias AFK.Keycodes.{Layer, None, Transparent}
   @enforce_keys [:layers, :counter]
   defstruct [:layers, :counter]
 

@@ -1,5 +1,5 @@
-defmodule Keyboard.StateTest do
+defmodule AFK.StateTest do
   use ExUnit.Case
 
-  doctest Keyboard.State, import: true
+  doctest AFK.State, import: true
 end

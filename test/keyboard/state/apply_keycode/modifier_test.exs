@@ -1,8 +1,8 @@
-defmodule Keyboard.State.ApplyKeycode.ModifierTest do
-  use Keyboard.KeycodeCase
+defmodule AFK.State.ApplyKeycode.ModifierTest do
+  use AFK.KeycodeCase
 
-  alias Keyboard.State
-  alias Keyboard.Keycodes.Modifier
+  alias AFK.State
+  alias AFK.Keycodes.Modifier
 
   @left_control Modifier.from_id!(:left_control)
   @left_shift Modifier.from_id!(:left_shift)

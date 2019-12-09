@@ -1,2 +1,2 @@
-defmodule Keyboard.Keycodes do
+defmodule AFK.Keycodes do
 end

@@ -1,9 +1,9 @@
-defmodule Keyboard.MixProject do
+defmodule AFK.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :keyboard,
+      app: :afk,
       version: "0.1.0",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),

@@ -1,13 +1,13 @@
-defmodule Keyboard.KeycodeCase do
+defmodule AFK.KeycodeCase do
   use ExUnit.CaseTemplate
   use Bitwise
 
-  alias Keyboard.State
-  alias Keyboard.Keycodes.{Key, Modifier}
+  alias AFK.State
+  alias AFK.Keycodes.{Key, Modifier}
 
   using do
     quote do
-      import Keyboard.KeycodeCase, only: [assert_6kr: 2, assert_modifiers: 2]
+      import AFK.KeycodeCase, only: [assert_6kr: 2, assert_modifiers: 2]
     end
   end
 

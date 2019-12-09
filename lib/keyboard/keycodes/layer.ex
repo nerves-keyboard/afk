@@ -1,4 +1,4 @@
-defmodule Keyboard.Keycodes.Layer do
+defmodule AFK.Keycodes.Layer do
   @enforce_keys [:type, :layer]
   defstruct [:type, :layer]
 
@@ -14,16 +14,16 @@ defmodule Keyboard.Keycodes.Layer do
   ## Examples
 
       iex> new(:hold, 1)
-      %Keyboard.Keycodes.Layer{layer: 1, type: :hold}
+      %AFK.Keycodes.Layer{layer: 1, type: :hold}
 
       iex> new(:hold, 2)
-      %Keyboard.Keycodes.Layer{layer: 2, type: :hold}
+      %AFK.Keycodes.Layer{layer: 2, type: :hold}
 
       iex> new(:toggle, 1)
-      %Keyboard.Keycodes.Layer{layer: 1, type: :toggle}
+      %AFK.Keycodes.Layer{layer: 1, type: :toggle}
 
       iex> new(:default, 2)
-      %Keyboard.Keycodes.Layer{layer: 2, type: :default}
+      %AFK.Keycodes.Layer{layer: 2, type: :default}
   """
   def new(type, layer) when type in ~w(hold toggle default)a do
     struct!(__MODULE__,

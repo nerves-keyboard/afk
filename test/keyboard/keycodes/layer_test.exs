@@ -1,7 +1,7 @@
-defmodule Keyboard.Keycodes.LayerTest do
+defmodule AFK.Keycodes.LayerTest do
   use ExUnit.Case
 
-  alias Keyboard.Keycodes.Layer
+  alias AFK.Keycodes.Layer
 
   doctest Layer, import: true
 

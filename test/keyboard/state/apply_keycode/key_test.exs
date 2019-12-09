@@ -1,8 +1,8 @@
-defmodule Keyboard.State.ApplyKeycode.KeyTest do
-  use Keyboard.KeycodeCase
+defmodule AFK.State.ApplyKeycode.KeyTest do
+  use AFK.KeycodeCase
 
-  alias Keyboard.State
-  alias Keyboard.Keycodes.Key
+  alias AFK.State
+  alias AFK.Keycodes.Key
 
   @a Key.from_id!(:a)
   @s Key.from_id!(:s)

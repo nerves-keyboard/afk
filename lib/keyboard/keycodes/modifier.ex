@@ -1,4 +1,4 @@
-defmodule Keyboard.Keycodes.Modifier do
+defmodule AFK.Keycodes.Modifier do
   @enforce_keys [:id, :value]
   defstruct [:id, :value]
 
@@ -22,10 +22,10 @@ defmodule Keyboard.Keycodes.Modifier do
   ## Examples
 
       iex> from_id!(:left_control)
-      %Keyboard.Keycodes.Modifier{id: :left_control, value: 1}
+      %AFK.Keycodes.Modifier{id: :left_control, value: 1}
 
       iex> from_id!(:right_super)
-      %Keyboard.Keycodes.Modifier{id: :right_super, value: 128}
+      %AFK.Keycodes.Modifier{id: :right_super, value: 128}
   """
   def from_id!(id)
 

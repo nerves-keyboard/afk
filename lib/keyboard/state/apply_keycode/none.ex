@@ -1,4 +1,4 @@
-defimpl Keyboard.State.ApplyKeycode, for: Keyboard.Keycodes.None do
+defimpl AFK.State.ApplyKeycode, for: AFK.Keycodes.None do
   def apply_keycode(_keycode, state, _key) do
     state
   end

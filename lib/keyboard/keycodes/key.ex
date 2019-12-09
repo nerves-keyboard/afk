@@ -1,4 +1,4 @@
-defmodule Keyboard.Keycodes.Key do
+defmodule AFK.Keycodes.Key do
   @enforce_keys [:id, :value]
   defstruct [:id, :value]
 
@@ -93,10 +93,10 @@ defmodule Keyboard.Keycodes.Key do
   ## Examples
 
       iex> from_id!(:a)
-      %Keyboard.Keycodes.Key{id: :a, value: 4}
+      %AFK.Keycodes.Key{id: :a, value: 4}
 
       iex> from_id!(:up)
-      %Keyboard.Keycodes.Key{id: :up, value: 82}
+      %AFK.Keycodes.Key{id: :up, value: 82}
   """
   def from_id!(id)
 

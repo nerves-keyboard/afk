@@ -1,3 +1,3 @@
-defmodule Keyboard.Keycodes.None do
+defmodule AFK.Keycodes.None do
   defstruct []
 end

@@ -1,4 +1,4 @@
-defmodule Keyboard.Keymap do
+defmodule AFK.Keymap do
   def load_from_file!(filename) do
     filename
     |> File.read!()

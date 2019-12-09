@@ -1,4 +1,4 @@
-defimpl Keyboard.State.ApplyKeycode, for: Keyboard.Keycodes.Key do
+defimpl AFK.State.ApplyKeycode, for: AFK.Keycodes.Key do
   def apply_keycode(keycode, state, key) do
     keycode_used? =
       Enum.any?(state.six_keys, fn

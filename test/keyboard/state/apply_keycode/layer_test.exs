@@ -1,8 +1,8 @@
-defmodule Keyboard.State.ApplyKeycode.LayerTest do
-  use Keyboard.KeycodeCase
+defmodule AFK.State.ApplyKeycode.LayerTest do
+  use AFK.KeycodeCase
 
-  alias Keyboard.State
-  alias Keyboard.Keycodes.{Key, Layer, None, Transparent}
+  alias AFK.State
+  alias AFK.Keycodes.{Key, Layer, None, Transparent}
 
   @q Key.from_id!(:q)
   @w Key.from_id!(:w)

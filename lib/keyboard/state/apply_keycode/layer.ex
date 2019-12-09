@@ -1,6 +1,6 @@
-defimpl Keyboard.State.ApplyKeycode, for: Keyboard.Keycodes.Layer do
-  alias Keyboard.Keycodes.Layer
-  alias Keyboard.State.Keymap
+defimpl AFK.State.ApplyKeycode, for: AFK.Keycodes.Layer do
+  alias AFK.Keycodes.Layer
+  alias AFK.State.Keymap
 
   def apply_keycode(%Layer{type: :hold} = keycode, state, key) do
     keymap = Keymap.add_activation(state.keymap, keycode, key)

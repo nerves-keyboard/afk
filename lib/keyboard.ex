@@ -1,2 +1,2 @@
-defmodule Keyboard do
+defmodule AFK do
 end

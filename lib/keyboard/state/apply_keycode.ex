@@ -1,4 +1,4 @@
-defprotocol Keyboard.State.ApplyKeycode do
+defprotocol AFK.State.ApplyKeycode do
   @doc "Applies a keycode to the keyboard state"
   def apply_keycode(keycode, state, key)
 

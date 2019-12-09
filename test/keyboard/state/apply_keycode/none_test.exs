@@ -1,8 +1,8 @@
-defmodule Keyboard.State.ApplyKeycode.NoneTest do
-  use Keyboard.KeycodeCase
+defmodule AFK.State.ApplyKeycode.NoneTest do
+  use AFK.KeycodeCase
 
-  alias Keyboard.State
-  alias Keyboard.Keycodes.{Key, None}
+  alias AFK.State
+  alias AFK.Keycodes.{Key, None}
 
   @a Key.from_id!(:a)
   @none %None{}

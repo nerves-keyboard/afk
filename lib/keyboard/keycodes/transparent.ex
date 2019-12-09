@@ -1,3 +1,3 @@
-defmodule Keyboard.Keycodes.Transparent do
+defmodule AFK.Keycodes.Transparent do
   defstruct []
 end

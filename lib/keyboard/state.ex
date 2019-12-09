@@ -1,4 +1,4 @@
-defmodule Keyboard.State do
+defmodule AFK.State do
   @moduledoc """
   A struct representing the current state of the keyboard.
 
@@ -15,8 +15,7 @@ defmodule Keyboard.State do
 
   use Bitwise
 
-  alias Keyboard.State.{ApplyKeycode, Keymap}
-  alias Keyboard.Keycodes.{None, Transparent}
+  alias AFK.State.{ApplyKeycode, Keymap}
 
   @enforce_keys [:keys, :keymap, :modifiers, :six_keys]
   defstruct [:keys, :keymap, :modifiers, :six_keys]
