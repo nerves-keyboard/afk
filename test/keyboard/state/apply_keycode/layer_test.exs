@@ -13,12 +13,16 @@ defmodule Keyboard.State.ApplyKeycode.LayerTest do
 
   @z Key.from_id!(:z)
 
+  @one Key.from_id!(:"1")
+
   @none %None{}
   @transparent %Transparent{}
 
   @hold_for_layer_1 Layer.new(:hold, 1)
   @hold_for_layer_2 Layer.new(:hold, 2)
   @toggle_layer_1 Layer.new(:toggle, 1)
+  @default_to_layer_3 Layer.new(:default, 3)
+  @default_to_layer_0 Layer.new(:default, 0)
 
   @layer_0 %{
     k001: @hold_for_layer_1,
@@ -27,7 +31,8 @@ defmodule Keyboard.State.ApplyKeycode.LayerTest do
     k004: @q,
     k005: @w,
     k006: @e,
-    k007: @toggle_layer_1
+    k007: @toggle_layer_1,
+    k008: @default_to_layer_3
   }
 
   @layer_1 %{
@@ -37,7 +42,8 @@ defmodule Keyboard.State.ApplyKeycode.LayerTest do
     k004: @a,
     k005: @s,
     k006: @transparent,
-    k007: @transparent
+    k007: @transparent,
+    k008: @transparent
   }
 
   @layer_2 %{
@@ -47,17 +53,19 @@ defmodule Keyboard.State.ApplyKeycode.LayerTest do
     k004: @z,
     k005: @transparent,
     k006: @transparent,
-    k007: @transparent
+    k007: @transparent,
+    k008: @transparent
   }
 
   @layer_3 %{
-    k001: @none,
+    k001: @one,
     k002: @none,
     k003: @none,
     k004: @none,
     k005: @none,
     k006: @none,
-    k007: @none
+    k007: @none,
+    k008: @default_to_layer_0
   }
 
   @keymap [
@@ -211,6 +219,43 @@ defmodule Keyboard.State.ApplyKeycode.LayerTest do
         |> State.press_key(:k004)
 
       assert_6kr(state, [@q, 0, 0, 0, 0, 0])
+    end
+  end
+
+  describe "switch default layers" do
+    test "switch to layer 3 as the default layer" do
+      state =
+        @keymap
+        |> State.new()
+        |> State.press_key(:k008)
+        |> State.release_key(:k008)
+        |> State.press_key(:k001)
+
+      assert_6kr(state, [@one, 0, 0, 0, 0, 0])
+    end
+
+    test "switches the default layer as soon as it's pressed" do
+      state =
+        @keymap
+        |> State.new()
+        |> State.press_key(:k008)
+        |> State.press_key(:k001)
+
+      assert_6kr(state, [@one, 0, 0, 0, 0, 0])
+    end
+
+    test "switch to layer 3 as the default layer then back to 1" do
+      state =
+        @keymap
+        |> State.new()
+        |> State.press_key(:k008)
+        |> State.release_key(:k008)
+        |> State.press_key(:k001)
+        |> State.press_key(:k008)
+        |> State.release_key(:k008)
+        |> State.press_key(:k004)
+
+      assert_6kr(state, [@one, @q, 0, 0, 0, 0])
     end
   end
 end

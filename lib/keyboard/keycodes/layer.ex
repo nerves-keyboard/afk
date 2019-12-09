@@ -5,8 +5,11 @@ defmodule Keyboard.Keycodes.Layer do
   @doc """
   Creates a layer activation keycode.
 
-  The only type currently supported is `:hold`, which allows activation of
-  another layer by holding the key.
+  The valid types are:
+
+  * `:hold` - Activates a layer while being held
+  * `:toggle` - Toggles a layer on or off when pressed
+  * `:default` - Sets a layer as the default layer
 
   ## Examples
 
@@ -18,8 +21,11 @@ defmodule Keyboard.Keycodes.Layer do
 
       iex> new(:toggle, 1)
       %Keyboard.Keycodes.Layer{layer: 1, type: :toggle}
+
+      iex> new(:default, 2)
+      %Keyboard.Keycodes.Layer{layer: 2, type: :default}
   """
-  def new(type, layer) when type in ~w(hold toggle)a do
+  def new(type, layer) when type in ~w(hold toggle default)a do
     struct!(__MODULE__,
       type: type,
       layer: layer

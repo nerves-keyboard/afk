@@ -81,4 +81,23 @@ defmodule Keyboard.State.Keymap do
       nil -> add_activation(keymap, keycode, key)
     end
   end
+
+  def set_default(%__MODULE__{} = keymap, %Layer{} = keycode, _key) do
+    layers =
+      keymap.layers
+      |> Map.new(fn {layer_id, layer} ->
+        cond do
+          layer.activations[:default] ->
+            {layer_id, layer |> update_in([:activations], &Map.delete(&1, :default)) |> Map.put(:active, false)}
+
+          layer_id == keycode.layer ->
+            {layer_id, layer |> put_in([:activations, :default], true) |> Map.put(:active, true)}
+
+          true ->
+            {layer_id, layer}
+        end
+      end)
+
+    %{keymap | layers: layers}
+  end
 end
