@@ -1,4 +1,6 @@
 defmodule AFK.Scancodes do
+  @moduledoc false
+
   def keyboard do
     [
       {0x04, :a},

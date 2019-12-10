@@ -1,4 +1,6 @@
 defmodule AFK.KeycodeCase do
+  @moduledoc false
+
   use ExUnit.CaseTemplate
   use Bitwise
 

@@ -1,7 +1,5 @@
 defmodule AFK.State.Keymap do
-  @moduledoc """
-  Internal keymap layer state struct
-  """
+  @moduledoc false
 
   alias AFK.Keycodes.{Layer, None, Transparent}
   @enforce_keys [:layers, :counter]

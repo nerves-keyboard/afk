@@ -1,13 +1,25 @@
 defmodule AFK.Keycodes.Modifier do
   @moduledoc """
-  TODO
+  Represents a basic modifier keycode, like control, shift, etc.
+
+  All standard modifiers on a keyboard can be represented by `Modifier`
+  keycodes. The following is a list of all supported modifiers:
+
+  * `:left_control`
+  * `:left_shift`
+  * `:left_alt`
+  * `:left_super`
+  * `:right_control`
+  * `:right_shift`
+  * `:right_alt`
+  * `:right_super`
   """
 
   @enforce_keys [:modifier]
   defstruct [:modifier]
 
   @doc """
-  Creates a basic modifier keycode struct.
+  Creates a basic modifier keycode.
 
   ## Examples
 

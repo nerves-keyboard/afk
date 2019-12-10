@@ -1,4 +1,14 @@
 defmodule AFK.Keycodes.Layer do
+  @moduledoc """
+  Represents a key that can activate other layers on and off in various ways.
+
+  Layers can be activated in 3 ways:
+
+  * `:hold` - Temporarily activates a layer while being held
+  * `:toggle` - Toggles a layer on or off when pressed
+  * `:default` - Sets a layer as the default layer
+  """
+
   @enforce_keys [:type, :layer]
   defstruct [:type, :layer]
 

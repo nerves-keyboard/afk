@@ -59,7 +59,7 @@ defmodule AFK.State do
   end
 
   @doc """
-  Dump keyboard state to HID report.
+  Return the keyboard state to as a 6-key USB keyboard HID report.
   """
   def to_hid_report(%__MODULE__{} = state) do
     modifiers_byte =

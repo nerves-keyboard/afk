@@ -1,4 +1,6 @@
 defimpl AFK.State.ApplyKeycode, for: AFK.Keycodes.Key do
+  @moduledoc false
+
   def apply_keycode(keycode, state, key) do
     keycode_used? =
       Enum.any?(state.six_keys, fn

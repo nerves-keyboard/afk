@@ -1,4 +1,6 @@
 defimpl AFK.State.ApplyKeycode, for: AFK.Keycodes.Layer do
+  @moduledoc false
+
   alias AFK.Keycodes.Layer
   alias AFK.State.Keymap
 
