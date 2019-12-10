@@ -28,17 +28,17 @@ First, you define a keymap:
 keymap = [
   # Layer 0 (default)
   %{
-    k001: AFK.Keycodes.Key.new(:a),
-    k002: AFK.Keycodes.Modifier.new(:left_control),
-    k003: AFK.Keycodes.Layer.new(:hold, 1),
-    k004: AFK.Keycodes.Key.new(:caps_lock)
+    k001: AFK.Keycode.Key.new(:a),
+    k002: AFK.Keycode.Modifier.new(:left_control),
+    k003: AFK.Keycode.Layer.new(:hold, 1),
+    k004: AFK.Keycode.Key.new(:caps_lock)
   },
   # Layer 1
   %{
-    k001: AFK.Keycodes.Key.new(:z),
-    k002: AFK.Keycodes.Modifier.new(:right_super),
-    k003: AFK.Keycodes.None.new(),
-    k004: AFK.Keycodes.Transparent.new()
+    k001: AFK.Keycode.Key.new(:z),
+    k002: AFK.Keycode.Modifier.new(:right_super),
+    k003: AFK.Keycode.None.new(),
+    k004: AFK.Keycode.Transparent.new()
   }
 ]
 ```
@@ -70,10 +70,10 @@ AFK.State.to_hid_report(state)
 It's intended to eventually support N-key rollover, but for now it just supports
 basic 6-key rollover.
 
-It may eventually also support more complex interactions, such as combo keys,
-macros, leader keys, and tap-dance. These features require a lot more thinking
-though, as they will require a process that emits an event stream as opposed to
-the current data structure approach.
+It may eventually also support more complex interactions, such as sticky keys,
+macros, leader keys, etc. These features require a lot more thinking though, as
+they will require a process that emits an event stream as opposed to the current
+data structure approach.
 
 ## Docs
 

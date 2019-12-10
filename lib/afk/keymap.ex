@@ -6,24 +6,24 @@ defmodule AFK.Keymap do
   pressing `AFK.Layer` keycodes.
 
   A keymap just needs to be a list of maps, where each map is a mapping of
-  physical key identifier (usually an atom), to a `AFK.Keycodes.Keycodes`.
+  physical key identifier (usually an atom), to a `AFK.Keycode.Keycode`.
 
   For example:
 
       [
         # Layer 0 (default)
         %{
-          k001: AFK.Keycodes.Key.new(:a),
-          k002: AFK.Keycodes.Modifier.new(:left_control),
-          k003: AFK.Keycodes.Layer.new(:hold, 1),
-          k004: AFK.Keycodes.Key.new(:caps_lock)
+          k001: AFK.Keycode.Key.new(:a),
+          k002: AFK.Keycode.Modifier.new(:left_control),
+          k003: AFK.Keycode.Layer.new(:hold, 1),
+          k004: AFK.Keycode.Key.new(:caps_lock)
         },
         # Layer 1
         %{
-          k001: AFK.Keycodes.Key.new(:z),
-          k002: AFK.Keycodes.Modifier.new(:right_super),
-          k003: AFK.Keycodes.None.new(),
-          k004: AFK.Keycodes.Transparent.new()
+          k001: AFK.Keycode.Key.new(:z),
+          k002: AFK.Keycode.Modifier.new(:right_super),
+          k003: AFK.Keycode.None.new(),
+          k004: AFK.Keycode.Transparent.new()
         }
       ]
   """

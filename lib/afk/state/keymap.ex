@@ -1,7 +1,7 @@
 defmodule AFK.State.Keymap do
   @moduledoc false
 
-  alias AFK.Keycodes.{Layer, None, Transparent}
+  alias AFK.Keycode.{Layer, None, Transparent}
   @enforce_keys [:layers, :counter]
   defstruct [:layers, :counter]
 

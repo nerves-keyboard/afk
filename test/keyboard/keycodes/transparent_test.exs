@@ -1,7 +1,7 @@
-defmodule AFK.Keycodes.TransparentTest do
+defmodule AFK.Keycode.TransparentTest do
   use ExUnit.Case
 
-  alias AFK.Keycodes.Transparent
+  alias AFK.Keycode.Transparent
 
   test "is an empty struct" do
     assert %Transparent{}

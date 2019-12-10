@@ -2,7 +2,7 @@ defmodule AFK.State.ApplyKeycode.KeyTest do
   use AFK.KeycodeCase
 
   alias AFK.State
-  alias AFK.Keycodes.Key
+  alias AFK.Keycode.Key
 
   @a Key.new(:a)
   @s Key.new(:s)

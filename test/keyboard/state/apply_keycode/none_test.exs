@@ -2,7 +2,7 @@ defmodule AFK.State.ApplyKeycode.NoneTest do
   use AFK.KeycodeCase
 
   alias AFK.State
-  alias AFK.Keycodes.{Key, None}
+  alias AFK.Keycode.{Key, None}
 
   @a Key.new(:a)
   @none %None{}

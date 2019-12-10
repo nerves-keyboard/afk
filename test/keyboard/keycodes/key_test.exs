@@ -1,7 +1,7 @@
-defmodule AFK.Keycodes.KeyTest do
+defmodule AFK.Keycode.KeyTest do
   use ExUnit.Case
 
-  alias AFK.Keycodes.Key
+  alias AFK.Keycode.Key
 
   doctest Key, import: true
 

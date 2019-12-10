@@ -2,7 +2,7 @@ defmodule AFK.State.ApplyKeycode.LayerTest do
   use AFK.KeycodeCase
 
   alias AFK.State
-  alias AFK.Keycodes.{Key, Layer, None, Transparent}
+  alias AFK.Keycode.{Key, Layer, None, Transparent}
 
   @q Key.new(:q)
   @w Key.new(:w)

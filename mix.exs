@@ -51,7 +51,10 @@ defmodule AFK.MixProject do
     [
       source_ref: @version,
       source_url: @source_url,
-      extras: ["README.md", "LICENSE.md"]
+      extras: [
+        "README.md": [title: "README"],
+        "LICENSE.md": [title: "LICENSE"]
+      ]
     ]
   end
 

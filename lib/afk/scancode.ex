@@ -1,5 +1,7 @@
-defmodule AFK.Scancodes do
+defmodule AFK.Scancode do
   @moduledoc false
+
+  def scancode(keycode), do: __MODULE__.Protocol.scancode(keycode)
 
   def keyboard do
     [

@@ -5,9 +5,9 @@ defmodule AFK.KeycodeCase do
   use Bitwise
 
   alias AFK.State
-  alias AFK.Keycodes.{Key, Modifier}
+  alias AFK.Keycode.{Key, Modifier}
 
-  import AFK.Keycodes.HIDValue, only: [hid_value: 1]
+  import AFK.Scancode, only: [scancode: 1]
 
   using do
     quote do
@@ -21,7 +21,7 @@ defmodule AFK.KeycodeCase do
     [one, two, three, four, five, six] =
       Enum.map(keys, fn
         0 -> 0
-        %Key{} = keycode -> hid_value(keycode)
+        %Key{} = keycode -> scancode(keycode)
       end)
 
     assert <<_, 0, ^one, ^two, ^three, ^four, ^five, ^six>> = State.to_hid_report(state)
@@ -29,7 +29,7 @@ defmodule AFK.KeycodeCase do
 
   # asserts the listed modifiers are active in the HID report.
   def assert_modifiers(state, modifiers) do
-    modifier_byte = Enum.reduce(modifiers, 0, fn %Modifier{} = keycode, acc -> hid_value(keycode) ||| acc end)
+    modifier_byte = Enum.reduce(modifiers, 0, fn %Modifier{} = keycode, acc -> scancode(keycode) ||| acc end)
 
     assert <<^modifier_byte, 0, _, _, _, _, _, _>> = State.to_hid_report(state)
   end

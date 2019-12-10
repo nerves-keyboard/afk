@@ -1,4 +1,4 @@
-defmodule AFK.Keycodes.Key do
+defmodule AFK.Keycode.Key do
   @moduledoc """
   Represents a basic keyboard keycode, like letters, numbers, etc.
 
@@ -95,18 +95,51 @@ defmodule AFK.Keycodes.Key do
   ## Examples
 
       iex> new(:a)
-      %AFK.Keycodes.Key{key: :a}
+      %AFK.Keycode.Key{key: :a}
 
       iex> new(:up)
-      %AFK.Keycodes.Key{key: :up}
+      %AFK.Keycode.Key{key: :up}
   """
-  for {_value, key} <- AFK.Scancodes.keyboard() do
+  for {_value, key} <- AFK.Scancode.keyboard() do
     def new(unquote(key)), do: struct!(__MODULE__, key: unquote(key))
   end
 
-  defimpl AFK.Keycodes.HIDValue do
-    for {value, key} <- AFK.Scancodes.keyboard() do
-      def hid_value(%AFK.Keycodes.Key{key: unquote(key)}), do: unquote(value)
+  defimpl AFK.Scancode.Protocol do
+    for {value, key} <- AFK.Scancode.keyboard() do
+      def scancode(%AFK.Keycode.Key{key: unquote(key)}), do: unquote(value)
+    end
+  end
+
+  defimpl AFK.ApplyKeycode do
+    def apply_keycode(keycode, state, key) do
+      keycode_used? =
+        Enum.any?(state.six_keys, fn
+          nil -> false
+          {_, kc} -> kc == keycode
+        end)
+
+      if keycode_used? do
+        state
+      else
+        {six_keys, _} =
+          Enum.map_reduce(state.six_keys, keycode, fn
+            x, nil -> {x, nil}
+            nil, kc -> {{key, kc}, nil}
+            x, kc -> {x, kc}
+          end)
+
+        %{state | six_keys: six_keys}
+      end
+    end
+
+    def unapply_keycode(keycode, state, key) do
+      six_keys =
+        Enum.map(state.six_keys, fn
+          {^key, ^keycode} -> nil
+          x -> x
+        end)
+
+      %{state | six_keys: six_keys}
     end
   end
 end

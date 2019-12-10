@@ -15,8 +15,10 @@ defmodule AFK.State do
 
   use Bitwise
 
-  alias AFK.State.{ApplyKeycode, Keymap}
-  import AFK.Keycodes.HIDValue, only: [hid_value: 1]
+  alias AFK.State.Keymap
+
+  import AFK.ApplyKeycode, only: [apply_keycode: 3, unapply_keycode: 3]
+  import AFK.Scancode, only: [scancode: 1]
 
   @enforce_keys [:keys, :keymap, :modifiers, :six_keys]
   defstruct [:keys, :keymap, :modifiers, :six_keys]
@@ -42,7 +44,7 @@ defmodule AFK.State do
     keycode = Keymap.find_keycode(state.keymap, key)
     state = %{state | keys: Map.put(state.keys, key, keycode)}
 
-    ApplyKeycode.apply_keycode(keycode, state, key)
+    apply_keycode(keycode, state, key)
   end
 
   @doc """
@@ -55,7 +57,7 @@ defmodule AFK.State do
     keys = Map.delete(state.keys, key)
     state = %{state | keys: keys}
 
-    ApplyKeycode.unapply_keycode(keycode, state, key)
+    unapply_keycode(keycode, state, key)
   end
 
   @doc """
@@ -64,13 +66,13 @@ defmodule AFK.State do
   def to_hid_report(%__MODULE__{} = state) do
     modifiers_byte =
       Enum.reduce(state.modifiers, 0, fn {_, keycode}, acc ->
-        hid_value(keycode) ||| acc
+        scancode(keycode) ||| acc
       end)
 
     [one, two, three, four, five, six] =
       Enum.map(state.six_keys, fn
         nil -> 0
-        {_, keycode} -> hid_value(keycode)
+        {_, keycode} -> scancode(keycode)
       end)
 
     <<modifiers_byte, 0, one, two, three, four, five, six>>

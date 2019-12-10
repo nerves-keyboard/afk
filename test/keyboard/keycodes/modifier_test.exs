@@ -1,7 +1,7 @@
-defmodule AFK.Keycodes.ModifierTest do
+defmodule AFK.Keycode.ModifierTest do
   use ExUnit.Case
 
-  alias AFK.Keycodes.Modifier
+  alias AFK.Keycode.Modifier
 
   doctest Modifier, import: true
 

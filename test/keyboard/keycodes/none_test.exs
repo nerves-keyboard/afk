@@ -1,7 +1,7 @@
-defmodule AFK.Keycodes.NoneTest do
+defmodule AFK.Keycode.NoneTest do
   use ExUnit.Case
 
-  alias AFK.Keycodes.None
+  alias AFK.Keycode.None
 
   test "is an empty struct" do
     assert %None{}
