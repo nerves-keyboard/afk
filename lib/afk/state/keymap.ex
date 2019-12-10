@@ -2,9 +2,22 @@ defmodule AFK.State.Keymap do
   @moduledoc false
 
   alias AFK.Keycode.{Layer, None, Transparent}
+
   @enforce_keys [:layers, :counter]
   defstruct [:layers, :counter]
 
+  @type t :: %__MODULE__{
+          layers: %{
+            optional(non_neg_integer) => %{
+              active: bool,
+              activations: %{optional(atom) => AFK.Keycode.t(), optional(:default) => true},
+              layer: AFK.Keymap.layer()
+            }
+          },
+          counter: [non_neg_integer]
+        }
+
+  @spec new(AFK.Keymap.t()) :: t
   def new([]) do
     struct!(__MODULE__, layers: %{}, counter: [])
   end
@@ -28,6 +41,7 @@ defmodule AFK.State.Keymap do
     struct!(__MODULE__, layers: layers, counter: counter)
   end
 
+  @spec find_keycode(t, atom) :: AFK.Keycode.t()
   def find_keycode(%__MODULE__{} = keymap, key) do
     case do_find_keycode(keymap.layers, keymap.counter, key) do
       %_mod{} = keycode -> keycode
@@ -45,6 +59,7 @@ defmodule AFK.State.Keymap do
     end)
   end
 
+  @spec add_activation(t, AFK.Keycode.Layer.t(), atom) :: t
   def add_activation(%__MODULE__{} = keymap, %Layer{} = keycode, key) do
     layers =
       keymap.layers
@@ -58,6 +73,7 @@ defmodule AFK.State.Keymap do
     %{keymap | layers: layers}
   end
 
+  @spec remove_activation(t, AFK.Keycode.Layer.t(), atom) :: t
   def remove_activation(%__MODULE__{} = keymap, %Layer{} = keycode, key) do
     layers =
       keymap.layers
@@ -73,6 +89,7 @@ defmodule AFK.State.Keymap do
     %{keymap | layers: layers}
   end
 
+  @spec toggle_activation(t, AFK.Keycode.Layer.t(), atom) :: t
   def toggle_activation(%__MODULE__{} = keymap, %Layer{} = keycode, key) do
     case keymap.layers[keycode.layer].activations[key] do
       ^keycode -> remove_activation(keymap, keycode, key)
@@ -80,6 +97,7 @@ defmodule AFK.State.Keymap do
     end
   end
 
+  @spec set_default(t, AFK.Keycode.Layer.t(), atom) :: t
   def set_default(%__MODULE__{} = keymap, %Layer{} = keycode, _key) do
     layers =
       keymap.layers

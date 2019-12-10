@@ -3,20 +3,23 @@ defmodule AFK.Keycode.Modifier do
   Represents a basic modifier keycode, like control, shift, etc.
 
   All standard modifiers on a keyboard can be represented by `Modifier`
-  keycodes. The following is a list of all supported modifiers:
-
-  * `:left_control`
-  * `:left_shift`
-  * `:left_alt`
-  * `:left_super`
-  * `:right_control`
-  * `:right_shift`
-  * `:right_alt`
-  * `:right_super`
+  keycodes. The currently supported modifiers are `t:modifier/0`.
   """
 
   @enforce_keys [:modifier]
   defstruct [:modifier]
+
+  @type modifier ::
+          unquote(
+            AFK.Scancode.modifiers()
+            |> Enum.map(&elem(&1, 1))
+            |> Enum.reverse()
+            |> Enum.reduce(&{:|, [], [&1, &2]})
+          )
+
+  @type t :: %__MODULE__{
+          modifier: modifier
+        }
 
   @doc """
   Creates a basic modifier keycode.
@@ -29,6 +32,9 @@ defmodule AFK.Keycode.Modifier do
       iex> new(:right_super)
       %AFK.Keycode.Modifier{modifier: :right_super}
   """
+  @spec new(modifier) :: t
+  def new(modifier)
+
   for {_value, modifier} <- AFK.Scancode.modifiers() do
     def new(unquote(modifier)), do: struct!(__MODULE__, modifier: unquote(modifier))
   end

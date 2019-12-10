@@ -7,8 +7,11 @@ defmodule AFK.Keycode.Transparent do
 
   defstruct []
 
+  @type t :: %__MODULE__{}
+
   @doc """
   Creates a `Transparent` keycode.
   """
+  @spec new :: t
   def new, do: %__MODULE__{}
 end

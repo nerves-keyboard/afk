@@ -9,8 +9,16 @@ defmodule AFK.Keycode.Layer do
   * `:default` - Sets a layer as the default layer
   """
 
-  @enforce_keys [:type, :layer]
-  defstruct [:type, :layer]
+  @enforce_keys [:mode, :layer]
+  defstruct [:mode, :layer]
+
+  @type mode :: :default | :hold | :toggle
+  @type layer :: non_neg_integer
+
+  @type t :: %__MODULE__{
+          mode: mode,
+          layer: layer
+        }
 
   @doc """
   Creates a layer activation keycode.
@@ -24,20 +32,21 @@ defmodule AFK.Keycode.Layer do
   ## Examples
 
       iex> new(:hold, 1)
-      %AFK.Keycode.Layer{layer: 1, type: :hold}
+      %AFK.Keycode.Layer{layer: 1, mode: :hold}
 
       iex> new(:hold, 2)
-      %AFK.Keycode.Layer{layer: 2, type: :hold}
+      %AFK.Keycode.Layer{layer: 2, mode: :hold}
 
       iex> new(:toggle, 1)
-      %AFK.Keycode.Layer{layer: 1, type: :toggle}
+      %AFK.Keycode.Layer{layer: 1, mode: :toggle}
 
       iex> new(:default, 2)
-      %AFK.Keycode.Layer{layer: 2, type: :default}
+      %AFK.Keycode.Layer{layer: 2, mode: :default}
   """
-  def new(type, layer) when type in ~w(hold toggle default)a and is_integer(layer) and layer >= 0 do
+  @spec new(mode, layer) :: t
+  def new(mode, layer) do
     struct!(__MODULE__,
-      type: type,
+      mode: mode,
       layer: layer
     )
   end
@@ -46,35 +55,35 @@ defmodule AFK.Keycode.Layer do
     alias AFK.Keycode.Layer
     alias AFK.State.Keymap
 
-    def apply_keycode(%Layer{type: :hold} = keycode, state, key) do
+    def apply_keycode(%Layer{mode: :hold} = keycode, state, key) do
       keymap = Keymap.add_activation(state.keymap, keycode, key)
 
       %{state | keymap: keymap}
     end
 
-    def apply_keycode(%Layer{type: :toggle} = keycode, state, key) do
+    def apply_keycode(%Layer{mode: :toggle} = keycode, state, key) do
       keymap = Keymap.toggle_activation(state.keymap, keycode, key)
 
       %{state | keymap: keymap}
     end
 
-    def apply_keycode(%Layer{type: :default} = keycode, state, key) do
+    def apply_keycode(%Layer{mode: :default} = keycode, state, key) do
       keymap = Keymap.set_default(state.keymap, keycode, key)
 
       %{state | keymap: keymap}
     end
 
-    def unapply_keycode(%Layer{type: :hold} = keycode, state, key) do
+    def unapply_keycode(%Layer{mode: :hold} = keycode, state, key) do
       keymap = Keymap.remove_activation(state.keymap, keycode, key)
 
       %{state | keymap: keymap}
     end
 
-    def unapply_keycode(%Layer{type: :toggle}, state, _key) do
+    def unapply_keycode(%Layer{mode: :toggle}, state, _key) do
       state
     end
 
-    def unapply_keycode(%Layer{type: :default}, state, _key) do
+    def unapply_keycode(%Layer{mode: :default}, state, _key) do
       state
     end
   end

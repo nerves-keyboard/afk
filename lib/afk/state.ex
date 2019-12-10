@@ -15,17 +15,25 @@ defmodule AFK.State do
 
   use Bitwise
 
-  alias AFK.State.Keymap
-
   import AFK.ApplyKeycode, only: [apply_keycode: 3, unapply_keycode: 3]
   import AFK.Scancode, only: [scancode: 1]
 
-  @enforce_keys [:keys, :keymap, :modifiers, :six_keys]
-  defstruct [:keys, :keymap, :modifiers, :six_keys]
+  alias AFK.State.Keymap
+
+  @enforce_keys [:keymap, :keys, :modifiers, :six_keys]
+  defstruct [:keymap, :keys, :modifiers, :six_keys]
+
+  @type t :: %__MODULE__{
+          keymap: Keymap.t(),
+          keys: %{atom => AFK.Keycode.t()},
+          modifiers: %{atom => AFK.Keycode.t()},
+          six_keys: [nil | AFK.Scancode.t()]
+        }
 
   @doc """
   Returns a new state struct initialized with the given keymap.
   """
+  @spec new(AFK.Keymap.t()) :: t
   def new(keymap) do
     struct!(__MODULE__,
       keys: %{},
@@ -38,6 +46,7 @@ defmodule AFK.State do
   @doc """
   Adds a key being pressed.
   """
+  @spec press_key(t, atom) :: t
   def press_key(%__MODULE__{} = state, key) do
     if Map.has_key?(state.keys, key), do: raise("Already pressed key pressed again! #{key}")
 
@@ -50,6 +59,7 @@ defmodule AFK.State do
   @doc """
   Releases a key being pressed.
   """
+  @spec release_key(t, atom) :: t
   def release_key(%__MODULE__{} = state, key) do
     if !Map.has_key?(state.keys, key), do: raise("Unpressed key released! #{key}")
 
@@ -63,6 +73,7 @@ defmodule AFK.State do
   @doc """
   Return the keyboard state to as a 6-key USB keyboard HID report.
   """
+  @spec to_hid_report(t) :: <<_::64>>
   def to_hid_report(%__MODULE__{} = state) do
     modifiers_byte =
       Enum.reduce(state.modifiers, 0, fn {_, keycode}, acc ->

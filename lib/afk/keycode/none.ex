@@ -5,9 +5,12 @@ defmodule AFK.Keycode.None do
 
   defstruct []
 
+  @type t :: %__MODULE__{}
+
   @doc """
   Creates a `None` keycode.
   """
+  @spec new :: t
   def new, do: %__MODULE__{}
 
   defimpl AFK.ApplyKeycode do

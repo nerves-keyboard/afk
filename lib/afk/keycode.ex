@@ -11,4 +11,10 @@ defmodule AFK.Keycode do
   * `AFK.Keycode.None` - A keycode that does nothing
   * `AFK.Keycode.Transparent` - A key that is transparent to its layer
   """
+
+  alias __MODULE__.{Key, Layer, Modifier, None, Transparent}
+
+  @type t :: Key.t() | Layer.t() | Modifier.t() | None.t() | Transparent.t()
+
+  @type with_scancode :: Key.t() | Modifier.t()
 end

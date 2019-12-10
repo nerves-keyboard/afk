@@ -27,10 +27,16 @@ defmodule AFK.Keymap do
         }
       ]
   """
+  @type layer :: %{
+          atom => AFK.Keycode.t()
+        }
+
+  @type t :: [layer]
 
   @doc """
   Loads a keymap from a file.
   """
+  @spec load_from_file!(binary) :: t
   def load_from_file!(filename) do
     filename
     |> File.read!()
@@ -40,6 +46,7 @@ defmodule AFK.Keymap do
   @doc """
   Saves a keymap to a file.
   """
+  @spec save_to_file!(t, binary) :: :ok
   def save_to_file!(keymap, filename) do
     keymap
     |> :erlang.term_to_binary()
