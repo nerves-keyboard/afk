@@ -33,7 +33,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          key: ${{ runner.os }}-mix-v2-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           restore-keys: |
             ${{ runner.os }}-mix-
       - name: Install dependencies
@@ -56,7 +56,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          key: ${{ runner.os }}-mix-v2-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - uses: actions/cache@v1
         with:
           path: _build
@@ -81,7 +81,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          key: ${{ runner.os }}-mix-v2-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - uses: actions/cache@v1
         with:
           path: _build
@@ -107,7 +107,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          key: ${{ runner.os }}-mix-v2-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - uses: actions/cache@v1
         with:
           path: _build
@@ -133,7 +133,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          key: ${{ runner.os }}-mix-v2-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - uses: actions/cache@v1
         with:
           path: _build
