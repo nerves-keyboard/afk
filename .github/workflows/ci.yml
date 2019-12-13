@@ -65,7 +65,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-
       - name: Compile
-        run: mix compile --warnings-as-errors
+        run: |
+          mix local.rebar --force --if-missing
+          mix compile --warnings-as-errors
 
   test:
     name: Tests
