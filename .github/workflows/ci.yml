@@ -4,6 +4,7 @@ on: push
 
 env:
   MIX_ENV: test
+  MIX_ARCHIVES: deps
 
 jobs:
   format:
@@ -37,8 +38,7 @@ jobs:
             ${{ runner.os }}-mix-
       - name: Install dependencies
         run: |
-          mix local.rebar --force
-          mix local.hex --force
+          mix local.hex --force --if-missing
           mix deps.get
 
   compile:
