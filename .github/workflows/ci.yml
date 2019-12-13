@@ -21,8 +21,8 @@ jobs:
       - name: Check formatted
         run: mix format --check-formatted
 
-  deps:
-    name: Dependencies
+  compile:
+    name: Compile
 
     runs-on: ubuntu-latest
 
@@ -33,49 +33,30 @@ jobs:
           otp-version: 22.x
           elixir-version: 1.9.x
       - uses: actions/cache@v1
+        id: cache-mix
         with:
           path: deps
           key: ${{ runner.os }}-mix-v3-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           restore-keys: |
             ${{ runner.os }}-mix-v3-
-      - name: Install dependencies
-        run: |
-          mix local.rebar --force --if-missing
-          mix local.hex --force --if-missing
-          mix deps.get
-
-  compile:
-    name: Compile
-
-    needs: deps
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-elixir@v1.1.0
-        with:
-          otp-version: 22.x
-          elixir-version: 1.9.x
       - uses: actions/cache@v1
-        with:
-          path: deps
-          key: ${{ runner.os }}-mix-v3-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-      - uses: actions/cache@v1
+        id: cache-build
         with:
           path: _build
           key: ${{ runner.os }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           restore-keys: |
             ${{ runner.os }}-build-
+      - name: Install dependencies
+        if: steps.cache-mix.outputs.cache-hit != 'true'
+        run: mix deps.get
       - name: Compile
-        run: |
-          mix local.rebar --force --if-missing
-          mix compile --warnings-as-errors
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: mix compile --warnings-as-errors
 
   test:
     name: Tests
 
-    needs: [deps, compile]
+    needs: compile
 
     runs-on: ubuntu-latest
 
@@ -94,9 +75,7 @@ jobs:
           path: _build
           key: ${{ runner.os }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - name: Run tests
-        run: |
-          mix local.rebar --force --if-missing
-          mix coveralls.json
+        run: mix coveralls.json
       - uses: codecov/codecov-action@v1.0.2
         with:
           token: ${{secrets.CODECOV_TOKEN}}
@@ -104,7 +83,7 @@ jobs:
   credo:
     name: Credo
 
-    needs: [deps, compile]
+    needs: compile
 
     runs-on: ubuntu-latest
 
@@ -128,7 +107,7 @@ jobs:
   dialyzer:
     name: Dialyzer
 
-    needs: [deps, compile]
+    needs: compile
 
     runs-on: ubuntu-latest
 
@@ -145,5 +124,11 @@ jobs:
         with:
           path: deps
           key: ${{ runner.os }}-mix-v3-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - uses: actions/cache@v1
+        with:
+          path: plts
+          key: ${{ runner.os }}-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-plts-
       - name: Run dialyzer
-        run: mix dialyzer --halt-exit-status
+        run: mix dialyzer
