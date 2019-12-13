@@ -6,24 +6,6 @@ env:
   MIX_ENV: test
 
 jobs:
-  compile:
-    name: Compile
-
-    runs-on: ubuntu-latest
-
-    container:
-      image: elixir:1.9.4-alpine
-
-    steps:
-      - uses: actions/checkout@v1
-      - name: Install dependencies
-        run: |
-          mix local.rebar --force
-          mix local.hex --force
-          mix deps.get
-      - name: Compile
-        run: mix compile --warnings-as-errors
-
   format:
     name: "Check Formatted"
 
@@ -34,16 +16,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Install Dependencies
-        run: |
-          mix local.rebar --force
-          mix local.hex --force
-          mix deps.get
       - name: Check formatted
         run: mix format --check-formatted
 
-  test:
-    name: Tests
+  deps:
+    name: Dependencies
 
     runs-on: ubuntu-latest
 
@@ -52,11 +29,63 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
       - name: Install dependencies
         run: |
           mix local.rebar --force
           mix local.hex --force
           mix deps.get
+
+  compile:
+    name: Compile
+
+    needs: deps
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: elixir:1.9.4-alpine
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - uses: actions/cache@v1
+        with:
+          path: _build
+          key: ${{ runner.os }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      - name: Compile
+        run: mix compile --warnings-as-errors
+
+  test:
+    name: Tests
+
+    needs: [deps, build]
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: elixir:1.9.4-alpine
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - uses: actions/cache@v1
+        with:
+          path: _build
+          key: ${{ runner.os }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - name: Run tests
         run: mix coveralls.json
       - uses: codecov/codecov-action@v1.0.2
@@ -66,6 +95,8 @@ jobs:
   credo:
     name: Credo
 
+    needs: [deps, build]
+
     runs-on: ubuntu-latest
 
     container:
@@ -73,16 +104,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Install Dependencies
-        run: |
-          mix local.rebar --force
-          mix local.hex --force
-          mix deps.get
+      - uses: actions/cache@v1
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - uses: actions/cache@v1
+        with:
+          path: _build
+          key: ${{ runner.os }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - name: Run credo
         run: mix credo --strict
 
   dialyzer:
     name: Dialyzer
+
+    needs: [deps, build]
 
     runs-on: ubuntu-latest
 
@@ -94,10 +130,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Install Dependencies
-        run: |
-          mix local.rebar --force
-          mix local.hex --force
-          mix deps.get
+      - uses: actions/cache@v1
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - uses: actions/cache@v1
+        with:
+          path: _build
+          key: ${{ runner.os }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - name: Run dialyzer
         run: mix dialyzer --halt-exit-status
