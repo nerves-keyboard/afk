@@ -1,7 +1,9 @@
 defmodule AFK.State.KeymapTest do
   use ExUnit.Case
 
+  alias AFK.State.Keymap
+
   test "empty state keymap" do
-    assert %AFK.State.Keymap{} = AFK.State.Keymap.new([])
+    assert %Keymap{} = Keymap.new([])
   end
 end
