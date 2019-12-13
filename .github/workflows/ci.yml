@@ -35,9 +35,10 @@ jobs:
           path: deps
           key: ${{ runner.os }}-mix-v2-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           restore-keys: |
-            ${{ runner.os }}-mix-
+            ${{ runner.os }}-mix-v2-
       - name: Install dependencies
         run: |
+          mix local.rebar --force --if-missing
           mix local.hex --force --if-missing
           mix deps.get
 
