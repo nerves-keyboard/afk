@@ -43,7 +43,7 @@ jobs:
         id: cache-build
         with:
           path: _build
-          key: ${{ runner.os }}-build-${{ hashFiles('./{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('lib/**/*.ex') }}-${{ hashFiles('test/**/*.ex') }}-${{ hashFiles('mix.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-
       - name: Install dependencies
@@ -73,7 +73,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: _build
-          key: ${{ runner.os }}-build-${{ hashFiles('./{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('lib/**/*.ex') }}-${{ hashFiles('test/**/*.ex') }}-${{ hashFiles('mix.lock') }}
       - name: Run tests
         run: mix coveralls.json
       - uses: codecov/codecov-action@v1.0.2
@@ -100,7 +100,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: _build
-          key: ${{ runner.os }}-build-${{ hashFiles('./{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('lib/**/*.ex') }}-${{ hashFiles('test/**/*.ex') }}-${{ hashFiles('mix.lock') }}
       - name: Run credo
         run: mix credo --strict
 
@@ -127,7 +127,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: plts
-          key: ${{ runner.os }}-plts-${{ hashFiles('./{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
+          key: ${{ runner.os }}-plts-${{ hashFiles('{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
           restore-keys: |
             ${{ runner.os }}-plts-
       - name: Run dialyzer
