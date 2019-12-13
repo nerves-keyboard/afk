@@ -12,11 +12,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: elixir:1.9.4-alpine
-
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1.1.0
+        with:
+          otp-version: 22.x
+          elixir-version: 1.9.x
       - name: Check formatted
         run: mix format --check-formatted
 
@@ -25,11 +26,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: elixir:1.9.4-alpine
-
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1.1.0
+        with:
+          otp-version: 22.x
+          elixir-version: 1.9.x
       - uses: actions/cache@v1
         with:
           path: deps
@@ -49,11 +51,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: elixir:1.9.4-alpine
-
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1.1.0
+        with:
+          otp-version: 22.x
+          elixir-version: 1.9.x
       - uses: actions/cache@v1
         with:
           path: deps
@@ -76,11 +79,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: elixir:1.9.4-alpine
-
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1.1.0
+        with:
+          otp-version: 22.x
+          elixir-version: 1.9.x
       - uses: actions/cache@v1
         with:
           path: deps
@@ -104,11 +108,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: elixir:1.9.4-alpine
-
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1.1.0
+        with:
+          otp-version: 22.x
+          elixir-version: 1.9.x
       - uses: actions/cache@v1
         with:
           path: deps
@@ -127,14 +132,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: elixir:1.9.4-alpine
-
     env:
       MIX_ENV: dev
 
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1.1.0
+        with:
+          otp-version: 22.x
+          elixir-version: 1.9.x
       - uses: actions/cache@v1
         with:
           path: deps
