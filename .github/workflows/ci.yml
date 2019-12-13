@@ -4,7 +4,6 @@ on: push
 
 env:
   MIX_ENV: test
-  MIX_ARCHIVES: deps
 
 jobs:
   format:
