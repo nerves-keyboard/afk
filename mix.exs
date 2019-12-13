@@ -44,6 +44,7 @@ defmodule AFK.MixProject do
 
   defp dialyzer do
     [
+      plt_file: {:no_warn, "plts/afk.plt"},
       flags: [:unmatched_returns, :error_handling, :underspecs]
     ]
   end
