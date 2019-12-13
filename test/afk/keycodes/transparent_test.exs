@@ -3,7 +3,5 @@ defmodule AFK.Keycode.TransparentTest do
 
   alias AFK.Keycode.Transparent
 
-  test "is an empty struct" do
-    assert %Transparent{}
-  end
+  doctest Transparent, import: true
 end

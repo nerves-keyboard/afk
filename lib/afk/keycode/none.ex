@@ -9,6 +9,11 @@ defmodule AFK.Keycode.None do
 
   @doc """
   Creates a `None` keycode.
+
+  ## Examples
+
+      iex> new()
+      %AFK.Keycode.None{}
   """
   @spec new :: t
   def new, do: %__MODULE__{}

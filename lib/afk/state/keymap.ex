@@ -100,8 +100,7 @@ defmodule AFK.State.Keymap do
   @spec set_default(t, AFK.Keycode.Layer.t(), atom) :: t
   def set_default(%__MODULE__{} = keymap, %Layer{} = keycode, _key) do
     layers =
-      keymap.layers
-      |> Map.new(fn {layer_id, layer} ->
+      Map.new(keymap.layers, fn {layer_id, layer} ->
         cond do
           layer.activations[:default] ->
             {layer_id, layer |> update_in([:activations], &Map.delete(&1, :default)) |> Map.put(:active, false)}

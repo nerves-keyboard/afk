@@ -11,6 +11,12 @@ defmodule AFK.Keycode.Transparent do
 
   @doc """
   Creates a `Transparent` keycode.
+
+
+  ## Examples
+
+      iex> new()
+      %AFK.Keycode.Transparent{}
   """
   @spec new :: t
   def new, do: %__MODULE__{}

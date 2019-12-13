@@ -3,7 +3,5 @@ defmodule AFK.Keycode.NoneTest do
 
   alias AFK.Keycode.None
 
-  test "is an empty struct" do
-    assert %None{}
-  end
+  doctest None, import: true
 end

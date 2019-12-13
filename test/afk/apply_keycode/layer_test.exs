@@ -1,4 +1,4 @@
-defmodule AFK.State.ApplyKeycode.LayerTest do
+defmodule AFK.ApplyKeycode.LayerTest do
   use AFK.KeycodeCase
 
   alias AFK.State
@@ -15,8 +15,8 @@ defmodule AFK.State.ApplyKeycode.LayerTest do
 
   @one Key.new(:"1")
 
-  @none %None{}
-  @transparent %Transparent{}
+  @none None.new()
+  @transparent Transparent.new()
 
   @hold_for_layer_1 Layer.new(:hold, 1)
   @hold_for_layer_2 Layer.new(:hold, 2)
