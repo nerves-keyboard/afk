@@ -1,11 +1,11 @@
-defmodule AFK.State.ApplyKeycode.NoneTest do
+defmodule AFK.ApplyKeycode.NoneTest do
   use AFK.KeycodeCase
 
   alias AFK.State
   alias AFK.Keycode.{Key, None}
 
   @a Key.new(:a)
-  @none %None{}
+  @none None.new()
 
   @layer_0 %{
     k001: @none,

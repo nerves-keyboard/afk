@@ -1,4 +1,4 @@
-defmodule AFK.State.ApplyKeycode.KeyTest do
+defmodule AFK.ApplyKeycode.KeyTest do
   use AFK.KeycodeCase
 
   alias AFK.Keycode.Key
