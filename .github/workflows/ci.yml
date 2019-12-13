@@ -90,7 +90,9 @@ jobs:
           path: _build
           key: ${{ runner.os }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
       - name: Run tests
-        run: mix coveralls.json
+        run: |
+          mix local.rebar --force --if-missing
+          mix coveralls.json
       - uses: codecov/codecov-action@v1.0.2
         with:
           token: ${{secrets.CODECOV_TOKEN}}
