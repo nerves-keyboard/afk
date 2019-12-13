@@ -13,6 +13,9 @@ defmodule AFK.MixProject do
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      preferred_cli_env: preferred_cli_env(),
+      test_coverage: [tool: ExCoveralls],
+      dialyzer: dialyzer(),
       description: description(),
       package: package(),
       docs: docs(),
@@ -26,6 +29,22 @@ defmodule AFK.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp preferred_cli_env do
+    [
+      coveralls: :test,
+      "coveralls.detail": :test,
+      "coveralls.post": :test,
+      "coveralls.html": :test,
+      "coveralls.json": :test
+    ]
+  end
+
+  defp dialyzer do
+    [
+      flags: [:unmatched_returns, :error_handling, :underspecs]
     ]
   end
 
@@ -62,7 +81,8 @@ defmodule AFK.MixProject do
     [
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:excoveralls, "~> 0.10", only: :test}
     ]
   end
 end

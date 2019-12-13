@@ -1,8 +1,8 @@
 defmodule AFK.State.ApplyKeycode.ModifierTest do
   use AFK.KeycodeCase
 
-  alias AFK.State
   alias AFK.Keycode.Modifier
+  alias AFK.State
 
   @left_control Modifier.new(:left_control)
   @left_shift Modifier.new(:left_shift)
