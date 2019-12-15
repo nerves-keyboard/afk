@@ -55,6 +55,7 @@ defmodule AFK.Keycode.Layer do
     alias AFK.Keycode.Layer
     alias AFK.State.Keymap
 
+    @spec apply_keycode(AFK.Keycode.Layer.t(), AFK.State.t(), atom) :: AFK.State.t()
     def apply_keycode(%Layer{mode: :hold} = keycode, state, key) do
       keymap = Keymap.add_activation(state.keymap, keycode, key)
 
@@ -73,6 +74,7 @@ defmodule AFK.Keycode.Layer do
       %{state | keymap: keymap}
     end
 
+    @spec unapply_keycode(AFK.Keycode.Layer.t(), AFK.State.t(), atom) :: AFK.State.t()
     def unapply_keycode(%Layer{mode: :hold} = keycode, state, key) do
       keymap = Keymap.remove_activation(state.keymap, keycode, key)
 

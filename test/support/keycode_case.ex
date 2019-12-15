@@ -17,6 +17,7 @@ defmodule AFK.KeycodeCase do
 
   # checks that the HID report is as expected; assumes `keys` is a list of `Key`
   # structs or zeros, not any other kind of keycode.
+  @spec assert_6kr(AFK.State.t(), [0 | AFK.Keycode.Key.t()]) :: <<_::64>>
   def assert_6kr(state, keys) do
     [one, two, three, four, five, six] =
       Enum.map(keys, fn
@@ -28,6 +29,7 @@ defmodule AFK.KeycodeCase do
   end
 
   # asserts the listed modifiers are active in the HID report.
+  @spec assert_modifiers(AFK.State.t(), [AFK.Keycode.Modifier.t()]) :: <<_::64>>
   def assert_modifiers(state, modifiers) do
     modifier_byte = Enum.reduce(modifiers, 0, fn %Modifier{} = keycode, acc -> scancode(keycode) ||| acc end)
 
