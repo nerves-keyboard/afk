@@ -27,7 +27,7 @@ defmodule AFK.State do
           keymap: Keymap.t(),
           keys: %{atom => AFK.Keycode.t()},
           modifiers: %{atom => AFK.Keycode.Modifier.t()},
-          six_keys: [nil | AFK.Keycode.Key.t()]
+          six_keys: [nil | {atom, AFK.Keycode.Key.t()}]
         }
 
   @doc """
