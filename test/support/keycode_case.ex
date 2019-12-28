@@ -4,7 +4,7 @@ defmodule AFK.KeycodeCase do
   use ExUnit.CaseTemplate
   use Bitwise
 
-  alias AFK.State
+  alias AFK.HIDReport.SixKeyRollover
   alias AFK.Keycode.{Key, Modifier}
 
   import AFK.Scancode, only: [scancode: 1]
@@ -25,7 +25,7 @@ defmodule AFK.KeycodeCase do
         %Key{} = keycode -> scancode(keycode)
       end)
 
-    assert <<_, 0, ^one, ^two, ^three, ^four, ^five, ^six>> = State.to_hid_report(state)
+    assert <<_, 0, ^one, ^two, ^three, ^four, ^five, ^six>> = SixKeyRollover.hid_report(state)
   end
 
   # asserts the listed modifiers are active in the HID report.
@@ -33,6 +33,6 @@ defmodule AFK.KeycodeCase do
   def assert_modifiers(state, modifiers) do
     modifier_byte = Enum.reduce(modifiers, 0, fn %Modifier{} = keycode, acc -> scancode(keycode) ||| acc end)
 
-    assert <<^modifier_byte, 0, _, _, _, _, _, _>> = State.to_hid_report(state)
+    assert <<^modifier_byte, 0, _, _, _, _, _, _>> = SixKeyRollover.hid_report(state)
   end
 end

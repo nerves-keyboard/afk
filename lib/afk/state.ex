@@ -9,25 +9,22 @@ defmodule AFK.State do
   The keyboard state can be modified by calling `press_key/2` and
   `release_key/2` with physical key IDs.
 
-  The state can then be turned into a HID report byte string using
-  `to_hid_report/1`.
+  The state can then be turned into a binary HID report byte string using an
+  implementation of the `AFK.HIDReport` behaviour.
   """
 
-  use Bitwise
-
   import AFK.ApplyKeycode, only: [apply_keycode: 3, unapply_keycode: 3]
-  import AFK.Scancode, only: [scancode: 1]
 
   alias AFK.State.Keymap
 
-  @enforce_keys [:keymap, :keys, :modifiers, :six_keys]
-  defstruct [:keymap, :keys, :modifiers, :six_keys]
+  @enforce_keys [:indexed_keys, :keymap, :keys, :modifiers]
+  defstruct [:indexed_keys, :keymap, :keys, :modifiers]
 
   @type t :: %__MODULE__{
+          indexed_keys: %{non_neg_integer => {atom, AFK.Keycode.Key.t()}},
           keymap: Keymap.t(),
           keys: %{atom => AFK.Keycode.t()},
-          modifiers: %{atom => AFK.Keycode.Modifier.t()},
-          six_keys: [nil | {atom, AFK.Keycode.Key.t()}]
+          modifiers: %{atom => AFK.Keycode.Modifier.t()}
         }
 
   @doc """
@@ -36,10 +33,10 @@ defmodule AFK.State do
   @spec new(AFK.Keymap.t()) :: t
   def new(keymap) do
     struct!(__MODULE__,
-      keys: %{},
+      indexed_keys: %{},
       keymap: Keymap.new(keymap),
-      modifiers: %{},
-      six_keys: [nil, nil, nil, nil, nil, nil]
+      keys: %{},
+      modifiers: %{}
     )
   end
 
@@ -68,24 +65,5 @@ defmodule AFK.State do
     state = %{state | keys: keys}
 
     unapply_keycode(keycode, state, key)
-  end
-
-  @doc """
-  Return the keyboard state to as a 6-key USB keyboard HID report.
-  """
-  @spec to_hid_report(t) :: <<_::64>>
-  def to_hid_report(%__MODULE__{} = state) do
-    modifiers_byte =
-      Enum.reduce(state.modifiers, 0, fn {_, keycode}, acc ->
-        scancode(keycode) ||| acc
-      end)
-
-    [one, two, three, four, five, six] =
-      Enum.map(state.six_keys, fn
-        nil -> 0
-        {_, keycode} -> scancode(keycode)
-      end)
-
-    <<modifiers_byte, 0, one, two, three, four, five, six>>
   end
 end

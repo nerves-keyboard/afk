@@ -50,9 +50,9 @@ keymap = [
 ]
 ```
 
-You can now initialize an `AFK.State` struct and press and release keys. Calling
-`to_hid_report/1` returns a byte string for sending to a HID interface
-configured as a basic 6-key rollover USB keyboard.
+You can now initialize an `AFK.State` struct and press and release keys. Using
+an implementation of the `AFK.HIDReport` behaviour and calling `hid_report/1`
+returns a byte string for sending to a USB HID interface.
 
 ```elixir
 state = AFK.State.new(keymap)
@@ -63,19 +63,20 @@ state =
   |> AFK.State.press_key(:k002)
   |> AFK.State.press_key(:k001)
 
-AFK.State.to_hid_report(state)
+AFK.HIDReport.SixKeyRollover.hid_report(state)
 # => <<128, 0, 29, 0, 0, 0, 0, 0>>
 
 state = AFK.State.release_key(state, :k002)
 
-AFK.State.to_hid_report(state)
+AFK.HIDReport.SixKeyRollover.hid_report(state)
 # => <<0, 0, 29, 0, 0, 0, 0, 0>>
 ```
 
 ## Future Features
 
-It's intended to eventually support N-key rollover, but for now it just supports
-basic 6-key rollover.
+AFK provides a behaviour for defining how to convert the state into a HID
+report. Currently only a 6-key rollover implementation is provided, but an N-key
+rollover implementation would be a great addition. (Pull requests welcome!)
 
 It may eventually also support more complex interactions, such as sticky keys,
 macros, leader keys, etc. These features require a lot more thinking though, as
