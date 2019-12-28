@@ -26,8 +26,8 @@ defmodule AFK.State do
   @type t :: %__MODULE__{
           keymap: Keymap.t(),
           keys: %{atom => AFK.Keycode.t()},
-          modifiers: %{atom => AFK.Keycode.t()},
-          six_keys: [nil | AFK.Scancode.t()]
+          modifiers: %{atom => AFK.Keycode.Modifier.t()},
+          six_keys: [nil | AFK.Keycode.Key.t()]
         }
 
   @doc """
