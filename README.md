@@ -80,8 +80,7 @@ rollover implementation would be a great addition. (Pull requests welcome!)
 
 It may eventually also support more complex interactions, such as sticky keys,
 macros, leader keys, etc. These features require a lot more thinking though, as
-they will require a process that emits an event stream as opposed to the current
-data structure approach.
+they will require the state undergoing changes over time.
 
 ## Docs
 

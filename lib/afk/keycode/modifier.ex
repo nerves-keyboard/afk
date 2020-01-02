@@ -60,7 +60,7 @@ defmodule AFK.Keycode.Modifier do
       if modifier_used? do
         state
       else
-        modifiers = Map.put(state.modifiers, key, keycode)
+        modifiers = [{key, keycode} | state.modifiers]
 
         %{state | modifiers: modifiers}
       end
@@ -69,12 +69,10 @@ defmodule AFK.Keycode.Modifier do
     @spec unapply_keycode(AFK.Keycode.Modifier.t(), AFK.State.t(), atom) :: AFK.State.t()
     def unapply_keycode(keycode, state, key) do
       modifiers =
-        state.modifiers
-        |> Enum.filter(fn
+        Enum.filter(state.modifiers, fn
           {^key, ^keycode} -> false
           _ -> true
         end)
-        |> Map.new()
 
       %{state | modifiers: modifiers}
     end

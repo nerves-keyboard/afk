@@ -17,14 +17,16 @@ defmodule AFK.State do
 
   alias AFK.State.Keymap
 
-  @enforce_keys [:indexed_keys, :keymap, :keys, :modifiers]
-  defstruct [:indexed_keys, :keymap, :keys, :modifiers]
+  @enforce_keys [:indexed_keys, :keymap, :keys, :modifiers, :locked_keys, :pending_lock?]
+  defstruct [:indexed_keys, :keymap, :keys, :modifiers, :locked_keys, :pending_lock?]
 
   @type t :: %__MODULE__{
           indexed_keys: %{non_neg_integer => {atom, AFK.Keycode.Key.t()}},
           keymap: Keymap.t(),
           keys: %{atom => AFK.Keycode.t()},
-          modifiers: %{atom => AFK.Keycode.Modifier.t()}
+          modifiers: [{atom, AFK.Keycode.Modifier.t()}],
+          locked_keys: [{atom, AFK.Keycode.t()}],
+          pending_lock?: boolean()
         }
 
   @doc """
@@ -36,12 +38,14 @@ defmodule AFK.State do
       indexed_keys: %{},
       keymap: Keymap.new(keymap),
       keys: %{},
-      modifiers: %{}
+      modifiers: [],
+      locked_keys: [],
+      pending_lock?: false
     )
   end
 
   @doc """
-  Adds a key being pressed.
+  Presses a key.
   """
   @spec press_key(t, atom) :: t
   def press_key(%__MODULE__{} = state, key) do
@@ -49,8 +53,31 @@ defmodule AFK.State do
 
     keycode = Keymap.find_keycode(state.keymap, key)
     state = %{state | keys: Map.put(state.keys, key, keycode)}
+    state = handle_key_locking(state, key, keycode)
 
     apply_keycode(keycode, state, key)
+  end
+
+  defp handle_key_locking(state, _key, %AFK.Keycode.KeyLock{}), do: state
+
+  defp handle_key_locking(%__MODULE__{pending_lock?: true} = state, key, keycode) do
+    locked_keys = [{key, keycode} | state.locked_keys]
+
+    %{state | locked_keys: locked_keys, pending_lock?: false}
+  end
+
+  defp handle_key_locking(state, key, keycode) do
+    if Keyword.has_key?(state.locked_keys, key) do
+      locked_keys =
+        Enum.filter(state.locked_keys, fn
+          {^key, ^keycode} -> false
+          _ -> true
+        end)
+
+      %{state | locked_keys: locked_keys}
+    else
+      state
+    end
   end
 
   @doc """
@@ -64,6 +91,10 @@ defmodule AFK.State do
     keys = Map.delete(state.keys, key)
     state = %{state | keys: keys}
 
-    unapply_keycode(keycode, state, key)
+    if keycode in Keyword.get_values(state.locked_keys, key) do
+      state
+    else
+      unapply_keycode(keycode, state, key)
+    end
   end
 end
