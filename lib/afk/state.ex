@@ -1,61 +1,144 @@
 defmodule AFK.State do
   @moduledoc """
-  A struct representing the current state of the keyboard.
+  A process representing the current state of the keyboard.
 
   The state is initialized with a list of physical key to keycode maps
   representing the desired layers. The first layer is assumed to be the active
   default.
 
+  TODO: describe extra args
+
   The keyboard state can be modified by calling `press_key/2` and
   `release_key/2` with physical key IDs.
-
-  The state can then be turned into a binary HID report byte string using an
-  implementation of the `AFK.HIDReport` behaviour.
   """
 
-  import AFK.ApplyKeycode, only: [apply_keycode: 3, unapply_keycode: 3]
+  use GenServer
 
+  alias AFK.ApplyKeycode
   alias AFK.State.Keymap
 
-  @enforce_keys [:indexed_keys, :keymap, :keys, :modifiers, :locked_keys, :pending_lock?]
-  defstruct [:indexed_keys, :keymap, :keys, :modifiers, :locked_keys, :pending_lock?]
+  @enforce_keys [
+    :event_receiver,
+    :hid_report_mod,
+    :indexed_keys,
+    :keymap,
+    :keys,
+    :last_hid_report,
+    :locked_keys,
+    :modifiers,
+    :pending_lock?
+  ]
+  defstruct [
+    :event_receiver,
+    :hid_report_mod,
+    :indexed_keys,
+    :keymap,
+    :keys,
+    :last_hid_report,
+    :locked_keys,
+    :modifiers,
+    :pending_lock?
+  ]
 
   @type t :: %__MODULE__{
+          event_receiver: pid,
+          hid_report_mod: atom,
           indexed_keys: %{non_neg_integer => {atom, AFK.Keycode.Key.t()}},
           keymap: Keymap.t(),
           keys: %{atom => AFK.Keycode.t()},
-          modifiers: [{atom, AFK.Keycode.Modifier.t()}],
+          last_hid_report: nil | binary(),
           locked_keys: [{atom, AFK.Keycode.t()}],
+          modifiers: [{atom, AFK.Keycode.Modifier.t()}],
           pending_lock?: boolean()
         }
 
-  @doc """
-  Returns a new state struct initialized with the given keymap.
-  """
-  @spec new(AFK.Keymap.t()) :: t
-  def new(keymap) do
-    struct!(__MODULE__,
-      indexed_keys: %{},
-      keymap: Keymap.new(keymap),
-      keys: %{},
-      modifiers: [],
-      locked_keys: [],
-      pending_lock?: false
-    )
+  # Client
+
+  # TODO: spec
+  # TODO: docs
+  def start_link(args, opts \\ []) do
+    [
+      event_receiver: event_receiver,
+      keymap: keymap,
+      hid_report_mod: hid_report_mod
+    ] = args
+
+    state =
+      struct!(__MODULE__,
+        event_receiver: event_receiver,
+        hid_report_mod: hid_report_mod,
+        indexed_keys: %{},
+        keymap: Keymap.new(keymap),
+        keys: %{},
+        last_hid_report: nil,
+        locked_keys: [],
+        modifiers: [],
+        pending_lock?: false
+      )
+
+    GenServer.start_link(__MODULE__, state, opts)
   end
 
   @doc """
   Presses a key.
   """
-  @spec press_key(t, atom) :: t
-  def press_key(%__MODULE__{} = state, key) do
+  # TODO: spec
+  def press_key(pid, key) do
+    GenServer.cast(pid, {:press_key, key})
+  end
+
+  @doc """
+  Releases a key being pressed.
+  """
+  # TODO: spec
+  def release_key(pid, key) do
+    GenServer.cast(pid, {:release_key, key})
+  end
+
+  # Server
+
+  @doc false
+  # TODO: spec
+  def init(state) do
+    state = report!(state)
+    {:ok, state}
+  end
+
+  @doc false
+  # TODO: spec
+  def handle_cast({:press_key, key}, state) do
     if Map.has_key?(state.keys, key), do: raise("Already pressed key pressed again! #{key}")
 
     keycode = Keymap.find_keycode(state.keymap, key)
     state = %{state | keys: Map.put(state.keys, key, keycode)}
     state = handle_key_locking(state, key, keycode)
 
-    apply_keycode(keycode, state, key)
+    state = ApplyKeycode.apply_keycode(keycode, state, key)
+
+    state = report!(state)
+
+    {:noreply, state}
+  end
+
+  @doc false
+  # TODO: spec
+  def handle_cast({:release_key, key}, %__MODULE__{} = state) do
+    if !Map.has_key?(state.keys, key), do: raise("Unpressed key released! #{key}")
+
+    %{^key => keycode} = state.keys
+    keys = Map.delete(state.keys, key)
+    state = %{state | keys: keys}
+
+    state =
+      if keycode in Keyword.get_values(state.locked_keys, key) do
+        state
+      else
+        ApplyKeycode.unapply_keycode(keycode, state, key)
+      end
+
+    state = report!(state)
+
+    {:noreply, state}
   end
 
   defp handle_key_locking(state, _key, %AFK.Keycode.KeyLock{}), do: state
@@ -80,21 +163,15 @@ defmodule AFK.State do
     end
   end
 
-  @doc """
-  Releases a key being pressed.
-  """
-  @spec release_key(t, atom) :: t
-  def release_key(%__MODULE__{} = state, key) do
-    if !Map.has_key?(state.keys, key), do: raise("Unpressed key released! #{key}")
+  defp report!(state) do
+    hid_report = state.hid_report_mod.hid_report(state)
 
-    %{^key => keycode} = state.keys
-    keys = Map.delete(state.keys, key)
-    state = %{state | keys: keys}
+    if state.last_hid_report != hid_report do
+      send(state.event_receiver, {:hid_report, hid_report})
 
-    if keycode in Keyword.get_values(state.locked_keys, key) do
-      state
+      %{state | last_hid_report: hid_report}
     else
-      unapply_keycode(keycode, state, key)
+      state
     end
   end
 end

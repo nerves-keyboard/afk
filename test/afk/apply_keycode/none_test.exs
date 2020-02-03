@@ -1,8 +1,8 @@
 defmodule AFK.ApplyKeycode.NoneTest do
-  use AFK.KeycodeCase
+  use AFK.SixKeyCase, async: true
 
-  alias AFK.State
   alias AFK.Keycode.{Key, None}
+  alias AFK.State
 
   @a Key.new(:a)
   @none None.new()
@@ -21,41 +21,33 @@ defmodule AFK.ApplyKeycode.NoneTest do
     @layer_0
   ]
 
-  test "pressing and releasing a none keycode does nothing" do
-    state =
-      @keymap
-      |> State.new()
-      |> State.press_key(:k001)
+  @moduletag keymap: @keymap
 
-    assert_6kr(state, [0, 0, 0, 0, 0, 0])
+  test "pressing and releasing a none keycode does nothing", %{state: state} do
+    State.press_key(state, :k001)
+    State.release_key(state, :k001)
 
-    state = State.release_key(state, :k001)
-
-    assert_6kr(state, [0, 0, 0, 0, 0, 0])
+    assert_hid_reports([])
   end
 
-  test "pressing a non-existent key is treated as a none key-press" do
-    state =
-      @keymap
-      |> State.new()
-      |> State.press_key(:k010)
+  test "pressing a non-existent key is treated as a none key-press", %{state: state} do
+    State.press_key(state, :k010)
 
-    assert_6kr(state, [0, 0, 0, 0, 0, 0])
+    assert_hid_reports([])
   end
 
-  test "pressing 6 none keys doesn't fill up the HID buffer" do
-    state =
-      Enum.reduce(
-        ~w(k001 k002 k003 k004 k005 k006)a,
-        State.new(@keymap),
-        &State.press_key(&2, &1)
-      )
-
-    assert_6kr(state, [0, 0, 0, 0, 0, 0])
+  test "pressing 6 none keys doesn't fill up the HID buffer", %{state: state} do
+    Enum.each(
+      ~w(k001 k002 k003 k004 k005 k006)a,
+      &State.press_key(state, &1)
+    )
 
     # all positions are still considered open, even though 6 keys are being
     # pressed
-    state = State.press_key(state, :k007)
-    assert_6kr(state, [@a, 0, 0, 0, 0, 0])
+    State.press_key(state, :k007)
+
+    assert_hid_reports([
+      [keys: [@a, 0, 0, 0, 0, 0]]
+    ])
   end
 end
