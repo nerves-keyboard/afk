@@ -65,8 +65,11 @@ defmodule AFK.SixKeyCase do
       expected_reports == received_reports ->
         assert expected_reports == received_reports
 
+      # coveralls-ignore-start
       :os.system_time(:millisecond) + 10 >= limit ->
         assert expected_reports == received_reports
+
+      # coveralls-ignore-stop
 
       true ->
         Process.sleep(10)
