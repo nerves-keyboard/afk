@@ -1,4 +1,6 @@
 defmodule AFK.ApplyKeycode.KeyTest do
+  @moduledoc false
+
   use AFK.SixKeyCase, async: true
 
   alias AFK.Keycode.Key
@@ -38,8 +40,8 @@ defmodule AFK.ApplyKeycode.KeyTest do
     State.release_key(state, :k001)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [0, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {0, 0, 0, 0, 0, 0}}
     ])
   end
 
@@ -53,10 +55,10 @@ defmodule AFK.ApplyKeycode.KeyTest do
     State.release_key(state, :k001)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
+      %{keys: {@a, 0, 0, 0, 0, 0}},
       # Because no state is changing with the second press of @a, no new events
       # are sent.
-      [keys: [0, 0, 0, 0, 0, 0]]
+      %{keys: {0, 0, 0, 0, 0, 0}}
     ])
   end
 
@@ -67,12 +69,12 @@ defmodule AFK.ApplyKeycode.KeyTest do
     )
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [@a, @s, 0, 0, 0, 0]],
-      [keys: [@a, @s, @d, 0, 0, 0]],
-      [keys: [@a, @s, @d, @f, 0, 0]],
-      [keys: [@a, @s, @d, @f, @g, 0]],
-      [keys: [@a, @s, @d, @f, @g, @h]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {@a, @s, 0, 0, 0, 0}},
+      %{keys: {@a, @s, @d, 0, 0, 0}},
+      %{keys: {@a, @s, @d, @f, 0, 0}},
+      %{keys: {@a, @s, @d, @f, @g, 0}},
+      %{keys: {@a, @s, @d, @f, @g, @h}}
       # The 6-key HID buffer is full and cannot express that j, k, and l are
       # also all being pressed. No further HID report events are sent.
     ])
@@ -94,20 +96,20 @@ defmodule AFK.ApplyKeycode.KeyTest do
 
     assert_hid_reports([
       # press k001 - k009
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [@a, @s, 0, 0, 0, 0]],
-      [keys: [@a, @s, @d, 0, 0, 0]],
-      [keys: [@a, @s, @d, @f, 0, 0]],
-      [keys: [@a, @s, @d, @f, @g, 0]],
-      [keys: [@a, @s, @d, @f, @g, @h]],
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {@a, @s, 0, 0, 0, 0}},
+      %{keys: {@a, @s, @d, 0, 0, 0}},
+      %{keys: {@a, @s, @d, @f, 0, 0}},
+      %{keys: {@a, @s, @d, @f, @g, 0}},
+      %{keys: {@a, @s, @d, @f, @g, @h}},
       # release k002, k004, k006 (the released keys free up new spots, but the
       # other held keys do not fill them)
-      [keys: [@a, 0, @d, @f, @g, @h]],
-      [keys: [@a, 0, @d, 0, @g, @h]],
-      [keys: [@a, 0, @d, 0, @g, 0]],
+      %{keys: {@a, 0, @d, @f, @g, @h}},
+      %{keys: {@a, 0, @d, 0, @g, @h}},
+      %{keys: {@a, 0, @d, 0, @g, 0}},
       # releasing and pressing k007 again allows it to take one of the freed
       # spots
-      [keys: [@a, @j, @d, 0, @g, 0]]
+      %{keys: {@a, @j, @d, 0, @g, 0}}
     ])
   end
 end

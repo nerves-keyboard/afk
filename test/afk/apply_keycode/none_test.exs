@@ -1,4 +1,6 @@
 defmodule AFK.ApplyKeycode.NoneTest do
+  @moduledoc false
+
   use AFK.SixKeyCase, async: true
 
   alias AFK.Keycode.{Key, None}
@@ -47,7 +49,7 @@ defmodule AFK.ApplyKeycode.NoneTest do
     State.press_key(state, :k007)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
   end
 end

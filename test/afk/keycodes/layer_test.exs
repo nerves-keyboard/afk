@@ -1,4 +1,6 @@
 defmodule AFK.Keycode.LayerTest do
+  @moduledoc false
+
   use ExUnit.Case
 
   alias AFK.Keycode.Layer

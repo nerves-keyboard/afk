@@ -76,7 +76,7 @@
         {Credo.Check.Refactor.ABCSize, []},
         {Credo.Check.Refactor.AppendSingleItem, []},
         {Credo.Check.Refactor.DoubleBooleanNegation, []},
-        {Credo.Check.Refactor.ModuleDependencies, []},
+        {Credo.Check.Refactor.ModuleDependencies, false},
         {Credo.Check.Refactor.PipeChainStart, []},
         {Credo.Check.Refactor.VariableRebinding, false},
         {Credo.Check.Warning.MapGetUnsafePass, []},

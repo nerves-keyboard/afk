@@ -1,12 +1,39 @@
 defmodule AFK.StateTest do
+  @moduledoc false
+
   use AFK.SixKeyCase, async: true
 
+  alias AFK.HIDReport.SixKeyRollover
   alias AFK.State
 
   @moduletag keymap: []
 
-  # TODO: add some more tests around starting the process successfully and
-  # unsuccessfully.
+  test "raises if trying to start without providing :event_receiver" do
+    assert_raise KeyError, ~r/key :event_receiver not found/, fn ->
+      State.start_link(
+        keymap: [],
+        hid_report_mod: SixKeyRollover
+      )
+    end
+  end
+
+  test "raises if trying to start without providing :keymap" do
+    assert_raise KeyError, ~r/key :keymap not found/, fn ->
+      State.start_link(
+        event_receiver: self(),
+        hid_report_mod: SixKeyRollover
+      )
+    end
+  end
+
+  test "raises if trying to start without providing :hid_report_mod" do
+    assert_raise KeyError, ~r/key :hid_report_mod not found/, fn ->
+      State.start_link(
+        event_receiver: self(),
+        keymap: []
+      )
+    end
+  end
 
   @tag :capture_log
   test "exits if same physical key is pressed twice", %{state: state} do

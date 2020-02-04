@@ -6,7 +6,7 @@ defmodule AFK.Keymap do
   pressing `AFK.Layer` keycodes.
 
   A keymap just needs to be a list of maps, where each map is a mapping of
-  physical key identifier (usually an atom), to a `AFK.Keycode.Keycode`.
+  physical key identifier (an atom), to an `AFK.Keycode.Keycode`.
 
   For example:
 

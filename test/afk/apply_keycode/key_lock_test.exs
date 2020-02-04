@@ -1,4 +1,6 @@
 defmodule AFK.ApplyKeycode.KeyLockTest do
+  @moduledoc false
+
   use AFK.SixKeyCase, async: true
 
   alias AFK.Keycode.{Key, KeyLock, Layer, Modifier, Transparent}
@@ -47,20 +49,20 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
 
     State.press_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
 
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [0, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {0, 0, 0, 0, 0, 0}}
     ])
   end
 
@@ -71,20 +73,20 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k004)
 
     assert_hid_reports([
-      [mods: [@left_control]]
+      %{mods: [@left_control]}
     ])
 
     State.press_key(state, :k004)
 
     assert_hid_reports([
-      [mods: [@left_control]]
+      %{mods: [@left_control]}
     ])
 
     State.release_key(state, :k004)
 
     assert_hid_reports([
-      [mods: [@left_control]],
-      [mods: []]
+      %{mods: [@left_control]},
+      %{mods: []}
     ])
   end
 
@@ -94,27 +96,27 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
 
     State.press_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
 
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [0, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {0, 0, 0, 0, 0, 0}}
     ])
 
     State.release_key(state, :k001)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [0, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {0, 0, 0, 0, 0, 0}}
     ])
   end
 
@@ -127,7 +129,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
 
     # activate layer 1
@@ -142,8 +144,8 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k003)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [@a, @b, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {@a, @b, 0, 0, 0, 0}}
     ])
 
     # unlock 'a' by tapping it again
@@ -151,9 +153,9 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [@a, @b, 0, 0, 0, 0]],
-      [keys: [0, @b, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {@a, @b, 0, 0, 0, 0}},
+      %{keys: {0, @b, 0, 0, 0, 0}}
     ])
 
     # activate layer 1
@@ -165,10 +167,10 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k003)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [@a, @b, 0, 0, 0, 0]],
-      [keys: [0, @b, 0, 0, 0, 0]],
-      [keys: [0, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {@a, @b, 0, 0, 0, 0}},
+      %{keys: {0, @b, 0, 0, 0, 0}},
+      %{keys: {0, 0, 0, 0, 0, 0}}
     ])
   end
 
@@ -181,7 +183,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
 
     # activate layer 1
@@ -190,17 +192,17 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [@a, @b, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {@a, @b, 0, 0, 0, 0}}
     ])
 
     # release 'b' on layer 1
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [@a, @b, 0, 0, 0, 0]],
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {@a, @b, 0, 0, 0, 0}},
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
   end
 
@@ -213,7 +215,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k004)
 
     assert_hid_reports([
-      [mods: [@left_control]]
+      %{mods: [@left_control]}
     ])
 
     # activate layer 1
@@ -228,8 +230,8 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k003)
 
     assert_hid_reports([
-      [mods: [@left_control]],
-      [mods: [@left_control, @left_shift]]
+      %{mods: [@left_control]},
+      %{mods: [@left_control, @left_shift]}
     ])
 
     # unlock 'left control' by tapping it again
@@ -237,9 +239,9 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k004)
 
     assert_hid_reports([
-      [mods: [@left_control]],
-      [mods: [@left_control, @left_shift]],
-      [mods: [@left_shift]]
+      %{mods: [@left_control]},
+      %{mods: [@left_control, @left_shift]},
+      %{mods: [@left_shift]}
     ])
 
     # activate layer 1
@@ -251,10 +253,10 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k003)
 
     assert_hid_reports([
-      [mods: [@left_control]],
-      [mods: [@left_control, @left_shift]],
-      [mods: [@left_shift]],
-      [mods: []]
+      %{mods: [@left_control]},
+      %{mods: [@left_control, @left_shift]},
+      %{mods: [@left_shift]},
+      %{mods: []}
     ])
   end
 
@@ -269,7 +271,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@b, 0, 0, 0, 0, 0]]
+      %{keys: {@b, 0, 0, 0, 0, 0}}
     ])
 
     # release 'b'
@@ -281,9 +283,9 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@b, 0, 0, 0, 0, 0]],
-      [keys: [0, 0, 0, 0, 0, 0]],
-      [keys: [@a, 0, 0, 0, 0, 0]]
+      %{keys: {@b, 0, 0, 0, 0, 0}},
+      %{keys: {0, 0, 0, 0, 0, 0}},
+      %{keys: {@a, 0, 0, 0, 0, 0}}
     ])
   end
 
@@ -300,8 +302,8 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.release_key(state, :k002)
 
     assert_hid_reports([
-      [keys: [@a, 0, 0, 0, 0, 0]],
-      [keys: [0, 0, 0, 0, 0, 0]]
+      %{keys: {@a, 0, 0, 0, 0, 0}},
+      %{keys: {0, 0, 0, 0, 0, 0}}
     ])
   end
 end

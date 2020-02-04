@@ -27,17 +27,24 @@ defmodule AFK.SixKeyCase do
     %{state: state}
   end
 
-  # TODO: spec
+  @type key :: 0 | AFK.Keycode.Key.t()
+  @type keys :: {key, key, key, key, key, key}
+  @type mods :: [AFK.Keycode.Modifier.t()]
+  @type report :: %{optional(:keys) => keys, optional(:mods) => mods}
+
+  @spec assert_hid_reports(reports :: [report], timeout :: non_neg_integer) :: :ok
   def assert_hid_reports(reports, timeout \\ 100) do
     limit = :os.system_time(:millisecond) + timeout
 
     expected_reports =
       Enum.map(reports, fn report ->
-        keys = Keyword.get(report, :keys, [0, 0, 0, 0, 0, 0])
-        mods = Keyword.get(report, :mods, [])
+        keys = Map.get(report, :keys, {0, 0, 0, 0, 0, 0})
+        mods = Map.get(report, :mods, [])
 
         [one, two, three, four, five, six] =
-          Enum.map(keys, fn
+          keys
+          |> Tuple.to_list()
+          |> Enum.map(fn
             0 -> 0
             %Key{} = keycode -> scancode(keycode)
           end)

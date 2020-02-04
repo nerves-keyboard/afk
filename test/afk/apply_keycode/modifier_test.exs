@@ -1,4 +1,6 @@
 defmodule AFK.ApplyKeycode.ModifierTest do
+  @moduledoc false
+
   use AFK.SixKeyCase, async: true
 
   alias AFK.Keycode.Modifier
@@ -36,8 +38,8 @@ defmodule AFK.ApplyKeycode.ModifierTest do
     State.release_key(state, :k001)
 
     assert_hid_reports([
-      [mods: [@left_control]],
-      [mods: []]
+      %{mods: [@left_control]},
+      %{mods: []}
     ])
   end
 
@@ -47,22 +49,22 @@ defmodule AFK.ApplyKeycode.ModifierTest do
 
     # left control is active
     assert_hid_reports([
-      [mods: [@left_control]]
+      %{mods: [@left_control]}
     ])
 
     # releasing the second instance of left control doesn't release it
     State.release_key(state, :k009)
 
     assert_hid_reports([
-      [mods: [@left_control]]
+      %{mods: [@left_control]}
     ])
 
     # releasing the original instance of left control releases it
     State.release_key(state, :k001)
 
     assert_hid_reports([
-      [mods: [@left_control]],
-      [mods: []]
+      %{mods: [@left_control]},
+      %{mods: []}
     ])
   end
 
@@ -76,12 +78,12 @@ defmodule AFK.ApplyKeycode.ModifierTest do
     State.release_key(state, :k007)
 
     assert_hid_reports([
-      [mods: [@left_control]],
-      [mods: [@left_control, @left_shift]],
-      [mods: [@left_control, @left_shift, @right_alt]],
-      [mods: [@left_control, @left_shift, @right_alt, @right_super]],
-      [mods: [@left_control, @right_alt, @right_super]],
-      [mods: [@left_control, @right_super]]
+      %{mods: [@left_control]},
+      %{mods: [@left_control, @left_shift]},
+      %{mods: [@left_control, @left_shift, @right_alt]},
+      %{mods: [@left_control, @left_shift, @right_alt, @right_super]},
+      %{mods: [@left_control, @right_alt, @right_super]},
+      %{mods: [@left_control, @right_super]}
     ])
   end
 end

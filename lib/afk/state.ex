@@ -1,15 +1,14 @@
 defmodule AFK.State do
   @moduledoc """
-  A process representing the current state of the keyboard.
+  A GenServer process representing the current state of the keyboard.
 
-  The state is initialized with a list of physical key to keycode maps
-  representing the desired layers. The first layer is assumed to be the active
-  default.
+  The process can effectively be thought of as a realtime stream manipulator. It
+  receives key press and key release events (through `press_key/2` and
+  `release_key/2` respectively) and transforms them into an outgoing event
+  stream of HID reports.
 
-  TODO: describe extra args
-
-  The keyboard state can be modified by calling `press_key/2` and
-  `release_key/2` with physical key IDs.
+  The process will send message to the given `:event_receiver` of the form
+  `{:hid_report, hid_report}`.
   """
 
   use GenServer
@@ -46,22 +45,34 @@ defmodule AFK.State do
           indexed_keys: %{non_neg_integer => {atom, AFK.Keycode.Key.t()}},
           keymap: Keymap.t(),
           keys: %{atom => AFK.Keycode.t()},
-          last_hid_report: nil | binary(),
+          last_hid_report: nil | binary,
           locked_keys: [{atom, AFK.Keycode.t()}],
           modifiers: [{atom, AFK.Keycode.Modifier.t()}],
-          pending_lock?: boolean()
+          pending_lock?: boolean
         }
+
+  @type args :: [
+          event_receiver: pid,
+          keymap: AFK.Keymap.t(),
+          hid_report_mod: atom
+        ]
 
   # Client
 
-  # TODO: spec
-  # TODO: docs
+  @doc """
+  Starts the state GenServer.
+
+  The three required arguments (in the form of a keyword list) are:
+
+  * `:event_receiver` - A PID to send the HID reports to.
+  * `:keymap` - The keymap to use (see `AFK.Keymap` for details).
+  * `:hid_report_mod` - A module that implements the `AFK.HIDReport` behaviour.
+  """
+  @spec start_link(args :: args, opts :: GenServer.options()) :: GenServer.on_start()
   def start_link(args, opts \\ []) do
-    [
-      event_receiver: event_receiver,
-      keymap: keymap,
-      hid_report_mod: hid_report_mod
-    ] = args
+    event_receiver = Keyword.fetch!(args, :event_receiver)
+    keymap = Keyword.fetch!(args, :keymap)
+    hid_report_mod = Keyword.fetch!(args, :hid_report_mod)
 
     state =
       struct!(__MODULE__,
@@ -81,31 +92,36 @@ defmodule AFK.State do
 
   @doc """
   Presses a key.
+
+  The given key must not already be being pressed, otherwise the server will
+  crash.
   """
-  # TODO: spec
-  def press_key(pid, key) do
-    GenServer.cast(pid, {:press_key, key})
+  @spec press_key(server :: GenServer.server(), key :: atom) :: :ok
+  def press_key(server, key) do
+    GenServer.cast(server, {:press_key, key})
   end
 
   @doc """
   Releases a key being pressed.
+
+  The given key must be being pressed, otherwise the server will crash.
   """
-  # TODO: spec
-  def release_key(pid, key) do
-    GenServer.cast(pid, {:release_key, key})
+  @spec release_key(server :: GenServer.server(), key :: atom) :: :ok
+  def release_key(server, key) do
+    GenServer.cast(server, {:release_key, key})
   end
 
   # Server
 
   @doc false
-  # TODO: spec
+  @spec init(state :: AFK.State.t()) :: {:ok, AFK.State.t()}
   def init(state) do
     state = report!(state)
     {:ok, state}
   end
 
   @doc false
-  # TODO: spec
+  @spec handle_cast(msg :: {:press_key | :release_key, atom}, state :: AFK.State.t()) :: {:noreply, AFK.State.t()}
   def handle_cast({:press_key, key}, state) do
     if Map.has_key?(state.keys, key), do: raise("Already pressed key pressed again! #{key}")
 
@@ -121,7 +137,6 @@ defmodule AFK.State do
   end
 
   @doc false
-  # TODO: spec
   def handle_cast({:release_key, key}, %__MODULE__{} = state) do
     if !Map.has_key?(state.keys, key), do: raise("Unpressed key released! #{key}")
 

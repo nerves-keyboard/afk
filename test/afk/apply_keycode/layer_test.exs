@@ -1,4 +1,6 @@
 defmodule AFK.ApplyKeycode.LayerTest do
+  @moduledoc false
+
   use AFK.SixKeyCase, async: true
 
   alias AFK.Keycode.{Key, Layer, None, Transparent}
@@ -81,7 +83,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
     State.press_key(state, :k004)
 
     assert_hid_reports([
-      [keys: [@q, 0, 0, 0, 0, 0]]
+      %{keys: {@q, 0, 0, 0, 0, 0}}
     ])
   end
 
@@ -96,7 +98,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k004)
 
       assert_hid_reports([
-        [keys: [@a, 0, 0, 0, 0, 0]]
+        %{keys: {@a, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -112,7 +114,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
 
       # falls through to lower active layer (0)
       assert_hid_reports([
-        [keys: [@e, 0, 0, 0, 0, 0]]
+        %{keys: {@e, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -122,7 +124,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
 
       # layer 1 no longer active, so this is layer 0 (default)
       assert_hid_reports([
-        [keys: [@q, 0, 0, 0, 0, 0]]
+        %{keys: {@q, 0, 0, 0, 0, 0}}
       ])
     end
   end
@@ -139,7 +141,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k004)
 
       assert_hid_reports([
-        [keys: [@z, 0, 0, 0, 0, 0]]
+        %{keys: {@z, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -148,7 +150,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
 
       # falls through to lower active layer (1)
       assert_hid_reports([
-        [keys: [@s, 0, 0, 0, 0, 0]]
+        %{keys: {@s, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -157,7 +159,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
 
       # falls through two layers to default layer (0)
       assert_hid_reports([
-        [keys: [@e, 0, 0, 0, 0, 0]]
+        %{keys: {@e, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -169,7 +171,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
 
       # layer 1 is no longer active, so it skips layer 1 and uses 0
       assert_hid_reports([
-        [keys: [@w, 0, 0, 0, 0, 0]]
+        %{keys: {@w, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -191,12 +193,12 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.release_key(state, :k005)
 
       assert_hid_reports([
-        [keys: [@s, 0, 0, 0, 0, 0]],
-        [keys: [0, 0, 0, 0, 0, 0]],
-        [keys: [@s, 0, 0, 0, 0, 0]],
-        [keys: [0, 0, 0, 0, 0, 0]],
-        [keys: [@w, 0, 0, 0, 0, 0]],
-        [keys: [0, 0, 0, 0, 0, 0]]
+        %{keys: {@s, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}},
+        %{keys: {@s, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}},
+        %{keys: {@w, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}}
       ])
     end
   end
@@ -213,7 +215,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k004)
 
       assert_hid_reports([
-        [keys: [@a, 0, 0, 0, 0, 0]]
+        %{keys: {@a, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -223,7 +225,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k004)
 
       assert_hid_reports([
-        [keys: [@q, 0, 0, 0, 0, 0]]
+        %{keys: {@q, 0, 0, 0, 0, 0}}
       ])
     end
   end
@@ -235,7 +237,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k001)
 
       assert_hid_reports([
-        [keys: [@one, 0, 0, 0, 0, 0]]
+        %{keys: {@one, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -244,7 +246,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k001)
 
       assert_hid_reports([
-        [keys: [@one, 0, 0, 0, 0, 0]]
+        %{keys: {@one, 0, 0, 0, 0, 0}}
       ])
     end
 
@@ -257,8 +259,8 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k004)
 
       assert_hid_reports([
-        [keys: [@one, 0, 0, 0, 0, 0]],
-        [keys: [@one, @q, 0, 0, 0, 0]]
+        %{keys: {@one, 0, 0, 0, 0, 0}},
+        %{keys: {@one, @q, 0, 0, 0, 0}}
       ])
     end
   end
