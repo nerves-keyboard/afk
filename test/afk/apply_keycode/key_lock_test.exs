@@ -3,7 +3,11 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
 
   use AFK.SixKeyCase, async: true
 
-  alias AFK.Keycode.{Key, KeyLock, Layer, Modifier, Transparent}
+  alias AFK.Keycode.Key
+  alias AFK.Keycode.KeyLock
+  alias AFK.Keycode.Layer
+  alias AFK.Keycode.Modifier
+  alias AFK.Keycode.Transparent
   alias AFK.State
 
   @a Key.new(:a)

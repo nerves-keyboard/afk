@@ -40,7 +40,7 @@ defmodule AFK.Keycode.Modifier do
   end
 
   defimpl AFK.Scancode.Protocol do
-    @spec scancode(AFK.Keycode.Modifier.t()) :: AFK.Scancode.t()
+    @spec scancode(keycode :: AFK.Keycode.Modifier.t()) :: AFK.Scancode.t()
     def scancode(keycode)
 
     for {value, modifier} <- AFK.Scancode.modifiers() do
@@ -49,12 +49,12 @@ defmodule AFK.Keycode.Modifier do
   end
 
   defimpl AFK.ApplyKeycode, for: AFK.Keycode.Modifier do
-    @spec apply_keycode(AFK.Keycode.Modifier.t(), AFK.State.t(), atom) :: AFK.State.t()
+    @spec apply_keycode(keycode :: AFK.Keycode.Modifier.t(), state :: AFK.State.t(), key :: atom) :: AFK.State.t()
     def apply_keycode(keycode, state, key) do
       modifier_used? =
         Enum.any?(state.modifiers, fn
           {_key, ^keycode} -> true
-          _ -> false
+          {_key, _keycode} -> false
         end)
 
       if modifier_used? do
@@ -66,12 +66,12 @@ defmodule AFK.Keycode.Modifier do
       end
     end
 
-    @spec unapply_keycode(AFK.Keycode.Modifier.t(), AFK.State.t(), atom) :: AFK.State.t()
+    @spec unapply_keycode(keycode :: AFK.Keycode.Modifier.t(), state :: AFK.State.t(), key :: atom) :: AFK.State.t()
     def unapply_keycode(keycode, state, key) do
       modifiers =
         Enum.filter(state.modifiers, fn
           {^key, ^keycode} -> false
-          _ -> true
+          {_key, _keycode} -> true
         end)
 
       %{state | modifiers: modifiers}

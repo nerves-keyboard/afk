@@ -16,10 +16,10 @@ defmodule AFK.HIDReport.SixKeyRollover do
   import AFK.Scancode, only: [scancode: 1]
 
   @impl AFK.HIDReport
-  @spec hid_report(AFK.State.t()) :: <<_::64>>
+  @spec hid_report(state :: AFK.State.t()) :: <<_::64>>
   def hid_report(%AFK.State{} = state) do
     modifiers_byte =
-      Enum.reduce(state.modifiers, 0, fn {_, keycode}, acc ->
+      Enum.reduce(state.modifiers, 0, fn {_key, keycode}, acc ->
         scancode(keycode) ||| acc
       end)
 

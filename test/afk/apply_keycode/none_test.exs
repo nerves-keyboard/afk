@@ -3,7 +3,8 @@ defmodule AFK.ApplyKeycode.NoneTest do
 
   use AFK.SixKeyCase, async: true
 
-  alias AFK.Keycode.{Key, None}
+  alias AFK.Keycode.Key
+  alias AFK.Keycode.None
   alias AFK.State
 
   @a Key.new(:a)

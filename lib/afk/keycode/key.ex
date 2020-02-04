@@ -40,7 +40,7 @@ defmodule AFK.Keycode.Key do
   end
 
   defimpl AFK.Scancode.Protocol do
-    @spec scancode(AFK.Keycode.Key.t()) :: AFK.Scancode.t()
+    @spec scancode(keycode :: AFK.Keycode.Key.t()) :: AFK.Scancode.t()
     def scancode(keycode)
 
     for {value, key} <- AFK.Scancode.keys() do
@@ -49,7 +49,7 @@ defmodule AFK.Keycode.Key do
   end
 
   defimpl AFK.ApplyKeycode do
-    @spec apply_keycode(AFK.Keycode.Key.t(), AFK.State.t(), atom) :: AFK.State.t()
+    @spec apply_keycode(keycode :: AFK.Keycode.Key.t(), state :: AFK.State.t(), key :: atom) :: AFK.State.t()
     def apply_keycode(keycode, state, key) do
       keycode_used? =
         Enum.any?(state.indexed_keys, fn
@@ -74,7 +74,7 @@ defmodule AFK.Keycode.Key do
       end
     end
 
-    @spec unapply_keycode(AFK.Keycode.Key.t(), AFK.State.t(), atom) :: AFK.State.t()
+    @spec unapply_keycode(keycode :: AFK.Keycode.Key.t(), state :: AFK.State.t(), key :: atom) :: AFK.State.t()
     def unapply_keycode(keycode, state, key) do
       index =
         Enum.find_value(state.indexed_keys, fn

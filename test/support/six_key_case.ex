@@ -5,7 +5,8 @@ defmodule AFK.SixKeyCase do
   use Bitwise
 
   alias AFK.HIDReport.SixKeyRollover
-  alias AFK.Keycode.{Key, Modifier}
+  alias AFK.Keycode.Key
+  alias AFK.Keycode.Modifier
   alias AFK.State
 
   import AFK.Scancode, only: [scancode: 1]

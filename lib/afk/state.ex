@@ -68,7 +68,7 @@ defmodule AFK.State do
   * `:keymap` - The keymap to use (see `AFK.Keymap` for details).
   * `:hid_report_mod` - A module that implements the `AFK.HIDReport` behaviour.
   """
-  @spec start_link(args :: args, opts :: GenServer.options()) :: GenServer.on_start()
+  @spec start_link(args, opts :: GenServer.options()) :: GenServer.on_start()
   def start_link(args, opts \\ []) do
     event_receiver = Keyword.fetch!(args, :event_receiver)
     keymap = Keyword.fetch!(args, :keymap)
@@ -169,7 +169,7 @@ defmodule AFK.State do
       locked_keys =
         Enum.filter(state.locked_keys, fn
           {^key, ^keycode} -> false
-          _ -> true
+          {_key, _keycode} -> true
         end)
 
       %{state | locked_keys: locked_keys}

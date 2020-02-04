@@ -5,7 +5,7 @@ defmodule AFK.HIDReport do
 
   Current implementations:
 
-  * `AFK.HIDReport.SixKeyRollover
+  * `AFK.HIDReport.SixKeyRollover`
   """
 
   @callback hid_report(AFK.State.t()) :: binary()
