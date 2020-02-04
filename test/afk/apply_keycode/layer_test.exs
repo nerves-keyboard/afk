@@ -1,8 +1,13 @@
 defmodule AFK.ApplyKeycode.LayerTest do
-  use AFK.KeycodeCase
+  @moduledoc false
 
+  use AFK.SixKeyCase, async: true
+
+  alias AFK.Keycode.Key
+  alias AFK.Keycode.Layer
+  alias AFK.Keycode.None
+  alias AFK.Keycode.Transparent
   alias AFK.State
-  alias AFK.Keycode.{Key, Layer, None, Transparent}
 
   @q Key.new(:q)
   @w Key.new(:w)
@@ -75,187 +80,191 @@ defmodule AFK.ApplyKeycode.LayerTest do
     @layer_3
   ]
 
-  test "the first layer is considered default and always active" do
-    state = @keymap |> State.new() |> State.press_key(:k004)
+  @moduletag keymap: @keymap
 
-    assert_6kr(state, [@q, 0, 0, 0, 0, 0])
+  test "the first layer is considered default and always active", %{state: state} do
+    State.press_key(state, :k004)
+
+    assert_hid_reports([
+      %{keys: {@q, 0, 0, 0, 0, 0}}
+    ])
   end
 
   describe "while holding layer 1 activation key" do
-    setup do
-      state =
-        @keymap
-        |> State.new()
-        |> State.press_key(:k001)
+    setup %{state: state} do
+      State.press_key(state, :k001)
 
-      {:ok, [state: state]}
+      :ok
     end
 
     test "press a regular key", %{state: state} do
-      state = State.press_key(state, :k004)
+      State.press_key(state, :k004)
 
-      assert_6kr(state, [@a, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}}
+      ])
     end
 
     test "press a none key", %{state: state} do
-      state = State.press_key(state, :k003)
+      State.press_key(state, :k003)
 
       # has no effect (does not fall through to lower level)
-      assert_6kr(state, [0, 0, 0, 0, 0, 0])
+      assert_hid_reports([])
     end
 
     test "press a transparent key", %{state: state} do
-      state = State.press_key(state, :k006)
+      State.press_key(state, :k006)
 
       # falls through to lower active layer (0)
-      assert_6kr(state, [@e, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@e, 0, 0, 0, 0, 0}}
+      ])
     end
 
     test "let go of layer 1 activation key", %{state: state} do
-      state =
-        state
-        |> State.release_key(:k001)
-        |> State.press_key(:k004)
+      State.release_key(state, :k001)
+      State.press_key(state, :k004)
 
       # layer 1 no longer active, so this is layer 0 (default)
-      assert_6kr(state, [@q, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@q, 0, 0, 0, 0, 0}}
+      ])
     end
   end
 
   describe "while holding layer 1 and layer 2 activation keys" do
-    setup do
-      state =
-        @keymap
-        |> State.new()
-        |> State.press_key(:k001)
-        |> State.press_key(:k002)
+    setup %{state: state} do
+      State.press_key(state, :k001)
+      State.press_key(state, :k002)
 
-      {:ok, [state: state]}
+      :ok
     end
 
     test "press a regular key", %{state: state} do
-      state = State.press_key(state, :k004)
+      State.press_key(state, :k004)
 
-      assert_6kr(state, [@z, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@z, 0, 0, 0, 0, 0}}
+      ])
     end
 
     test "press a transparent key that falls to layer 1 (still active)", %{state: state} do
-      state = State.press_key(state, :k005)
+      State.press_key(state, :k005)
 
       # falls through to lower active layer (1)
-      assert_6kr(state, [@s, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@s, 0, 0, 0, 0, 0}}
+      ])
     end
 
     test "press a transparent key that falls to layer 0 (default)", %{state: state} do
-      state = State.press_key(state, :k006)
+      State.press_key(state, :k006)
 
       # falls through two layers to default layer (0)
-      assert_6kr(state, [@e, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@e, 0, 0, 0, 0, 0}}
+      ])
     end
 
     test "let go of layer 1 activation key and press a transparent key that falls to layer 1", %{
       state: state
     } do
-      state =
-        state
-        |> State.release_key(:k001)
-        |> State.press_key(:k005)
+      State.release_key(state, :k001)
+      State.press_key(state, :k005)
 
       # layer 1 is no longer active, so it skips layer 1 and uses 0
-      assert_6kr(state, [@w, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@w, 0, 0, 0, 0, 0}}
+      ])
     end
 
     test "activating layer 1 a second time", %{state: state} do
-      state = State.press_key(state, :k003)
+      State.press_key(state, :k003)
 
       # layer 1 is considered active
-      state
-      |> State.press_key(:k005)
-      |> assert_6kr([@s, 0, 0, 0, 0, 0])
+      State.press_key(state, :k005)
+      State.release_key(state, :k005)
 
-      # releasing the first activation key still keeps layer 1 active
-      state
-      |> State.release_key(:k001)
-      |> State.press_key(:k005)
-      |> assert_6kr([@s, 0, 0, 0, 0, 0])
-
-      # releasing the second activation key still keeps layer 1 active
-      state
-      |> State.release_key(:k003)
-      |> State.press_key(:k005)
-      |> assert_6kr([@s, 0, 0, 0, 0, 0])
+      # releasing the first activation key by itself still keeps layer 1 active
+      State.release_key(state, :k001)
+      State.press_key(state, :k005)
+      State.release_key(state, :k005)
 
       # only releasing both activation keys will deactivate layer 1
-      state
-      |> State.release_key(:k001)
-      |> State.release_key(:k003)
-      |> State.press_key(:k005)
-      |> assert_6kr([@w, 0, 0, 0, 0, 0])
+      State.release_key(state, :k003)
+      State.press_key(state, :k005)
+      State.release_key(state, :k005)
+
+      assert_hid_reports([
+        %{keys: {@s, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}},
+        %{keys: {@s, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}},
+        %{keys: {@w, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}}
+      ])
     end
   end
 
   describe "after toggling layer 1" do
-    setup do
-      state =
-        @keymap
-        |> State.new()
-        |> State.press_key(:k007)
-        |> State.release_key(:k007)
+    setup %{state: state} do
+      State.press_key(state, :k007)
+      State.release_key(state, :k007)
 
-      {:ok, [state: state]}
+      :ok
     end
 
     test "layer 1 is active", %{state: state} do
-      state = State.press_key(state, :k004)
+      State.press_key(state, :k004)
 
-      assert_6kr(state, [@a, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}}
+      ])
     end
 
     test "toggling layer 1 again deactivates", %{state: state} do
-      state =
-        state
-        |> State.press_key(:k007)
-        |> State.release_key(:k007)
-        |> State.press_key(:k004)
+      State.press_key(state, :k007)
+      State.release_key(state, :k007)
+      State.press_key(state, :k004)
 
-      assert_6kr(state, [@q, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@q, 0, 0, 0, 0, 0}}
+      ])
     end
   end
 
   describe "switch default layers" do
-    test "switch to layer 3 as the default layer" do
-      state =
-        @keymap
-        |> State.new()
-        |> State.press_key(:k008)
-        |> State.release_key(:k008)
-        |> State.press_key(:k001)
+    test "switch to layer 3 as the default layer", %{state: state} do
+      State.press_key(state, :k008)
+      State.release_key(state, :k008)
+      State.press_key(state, :k001)
 
-      assert_6kr(state, [@one, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@one, 0, 0, 0, 0, 0}}
+      ])
     end
 
-    test "switches the default layer as soon as it's pressed" do
-      state =
-        @keymap
-        |> State.new()
-        |> State.press_key(:k008)
-        |> State.press_key(:k001)
+    test "switches the default layer as soon as it's pressed", %{state: state} do
+      State.press_key(state, :k008)
+      State.press_key(state, :k001)
 
-      assert_6kr(state, [@one, 0, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@one, 0, 0, 0, 0, 0}}
+      ])
     end
 
-    test "switch to layer 3 as the default layer then back to 1" do
-      state =
-        @keymap
-        |> State.new()
-        |> State.press_key(:k008)
-        |> State.release_key(:k008)
-        |> State.press_key(:k001)
-        |> State.press_key(:k008)
-        |> State.release_key(:k008)
-        |> State.press_key(:k004)
+    test "switch to layer 3 as the default layer then back to 1", %{state: state} do
+      State.press_key(state, :k008)
+      State.release_key(state, :k008)
+      State.press_key(state, :k001)
+      State.press_key(state, :k008)
+      State.release_key(state, :k008)
+      State.press_key(state, :k004)
 
-      assert_6kr(state, [@one, @q, 0, 0, 0, 0])
+      assert_hid_reports([
+        %{keys: {@one, 0, 0, 0, 0, 0}},
+        %{keys: {@one, @q, 0, 0, 0, 0}}
+      ])
     end
   end
 end

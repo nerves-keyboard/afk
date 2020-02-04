@@ -102,7 +102,7 @@ defmodule AFK.Scancode do
             )
           )
 
-  @spec scancode(AFK.Keycode.with_scancode()) :: t
+  @spec scancode(keycode :: AFK.Keycode.with_scancode()) :: t
   def scancode(keycode), do: __MODULE__.Protocol.scancode(keycode)
 
   @spec keys :: [{t, AFK.Keycode.Key.key()}]

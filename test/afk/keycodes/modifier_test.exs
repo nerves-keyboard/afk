@@ -1,4 +1,6 @@
 defmodule AFK.Keycode.ModifierTest do
+  @moduledoc false
+
   use ExUnit.Case
 
   alias AFK.Keycode.Modifier

@@ -1,5 +1,7 @@
 defmodule AFK.ApplyKeycode.ModifierTest do
-  use AFK.KeycodeCase
+  @moduledoc false
+
+  use AFK.SixKeyCase, async: true
 
   alias AFK.Keycode.Modifier
   alias AFK.State
@@ -29,49 +31,59 @@ defmodule AFK.ApplyKeycode.ModifierTest do
     @layer_0
   ]
 
-  test "press and release left control" do
-    state = @keymap |> State.new() |> State.press_key(:k001)
-    assert_modifiers(state, [@left_control])
+  @moduletag keymap: @keymap
 
-    state = State.release_key(state, :k001)
-    assert_modifiers(state, [])
+  test "press and release left control", %{state: state} do
+    State.press_key(state, :k001)
+    State.release_key(state, :k001)
+
+    assert_hid_reports([
+      %{mods: [@left_control]},
+      %{mods: []}
+    ])
   end
 
-  test "activating the same modifier using two different physical keys" do
-    state =
-      @keymap
-      |> State.new()
-      |> State.press_key(:k001)
-      |> State.press_key(:k009)
+  test "activating the same modifier using two different physical keys", %{state: state} do
+    State.press_key(state, :k001)
+    State.press_key(state, :k009)
 
     # left control is active
-    assert_modifiers(state, [@left_control])
+    assert_hid_reports([
+      %{mods: [@left_control]}
+    ])
 
     # releasing the second instance of left control doesn't release it
-    state = State.release_key(state, :k009)
-    assert_modifiers(state, [@left_control])
+    State.release_key(state, :k009)
+
+    assert_hid_reports([
+      %{mods: [@left_control]}
+    ])
 
     # releasing the original instance of left control releases it
-    state = State.release_key(state, :k001)
-    assert_modifiers(state, [])
+    State.release_key(state, :k001)
+
+    assert_hid_reports([
+      %{mods: [@left_control]},
+      %{mods: []}
+    ])
   end
 
-  test "press and release multiple modifiers" do
-    state =
-      @keymap
-      |> State.new()
-      |> State.press_key(:k001)
-      |> State.press_key(:k002)
-      |> State.press_key(:k007)
-      |> State.press_key(:k008)
+  test "press and release multiple modifiers", %{state: state} do
+    State.press_key(state, :k001)
+    State.press_key(state, :k002)
+    State.press_key(state, :k007)
+    State.press_key(state, :k008)
 
-    assert_modifiers(state, [@left_control, @left_shift, @right_alt, @right_super])
+    State.release_key(state, :k002)
+    State.release_key(state, :k007)
 
-    state =
-      state
-      |> State.release_key(:k002)
-      |> State.release_key(:k007)
-
-    assert_modifiers(state, [@left_control, @right_super])
+    assert_hid_reports([
+      %{mods: [@left_control]},
+      %{mods: [@left_control, @left_shift]},
+      %{mods: [@left_control, @left_shift, @right_alt]},
+      %{mods: [@left_control, @left_shift, @right_alt, @right_super]},
+      %{mods: [@left_control, @right_alt, @right_super]},
+      %{mods: [@left_control, @right_super]}
+    ])
   end
 end

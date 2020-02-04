@@ -1,4 +1,6 @@
 defmodule AFK.State.KeymapTest do
+  @moduledoc false
+
   use ExUnit.Case
 
   alias AFK.State.Keymap
