@@ -7,8 +7,8 @@ defmodule AFK.State do
   `release_key/2` respectively) and transforms them into an outgoing event
   stream of HID reports.
 
-  The process will send message to the given `:event_receiver` of the form
-  `{:hid_report, hid_report}`.
+  The process will send message of the form `{:hid_report, hid_report}` to the
+  given `:event_receiver` pid.
   """
 
   use GenServer
@@ -25,7 +25,9 @@ defmodule AFK.State do
     :last_hid_report,
     :locked_keys,
     :modifiers,
-    :pending_lock?
+    :pending_lock?,
+    :pending_messages,
+    :waiting_on
   ]
   defstruct [
     :event_receiver,
@@ -36,7 +38,9 @@ defmodule AFK.State do
     :last_hid_report,
     :locked_keys,
     :modifiers,
-    :pending_lock?
+    :pending_lock?,
+    :pending_messages,
+    :waiting_on
   ]
 
   @type t :: %__MODULE__{
@@ -48,7 +52,10 @@ defmodule AFK.State do
           last_hid_report: nil | binary,
           locked_keys: [{atom, AFK.Keycode.t()}],
           modifiers: [{atom, AFK.Keycode.Modifier.t()}],
-          pending_lock?: boolean
+          pending_lock?: boolean,
+          # TODO: types
+          pending_messages: list(any),
+          waiting_on: any
         }
 
   @type args :: [
@@ -84,7 +91,9 @@ defmodule AFK.State do
         last_hid_report: nil,
         locked_keys: [],
         modifiers: [],
-        pending_lock?: false
+        pending_lock?: false,
+        pending_messages: [],
+        waiting_on: %{}
       )
 
     GenServer.start_link(__MODULE__, state, opts)
@@ -121,12 +130,71 @@ defmodule AFK.State do
   end
 
   @doc false
-  @spec handle_cast(msg :: {:press_key | :release_key, atom}, state :: AFK.State.t()) :: {:noreply, AFK.State.t()}
-  def handle_cast({:press_key, key}, state) do
-    if Map.has_key?(state.keys, key), do: raise("Already pressed key pressed again! #{key}")
+  @spec handle_cast(message :: {:press_key | :release_key, atom}, state :: AFK.State.t()) :: {:noreply, AFK.State.t()}
+  def handle_cast(message, state) do
+    state =
+      case state.waiting_on do
+        %{^message => callbacks} ->
+          {key, keycode} = callbacks.resolve.()
+          state = %{state | waiting_on: Map.delete(state.waiting_on, message)}
 
-    keycode = Keymap.find_keycode(state.keymap, key)
+          # overwrites pressed key with resolved keycode
+          state = %{state | keys: Map.put(state.keys, key, keycode)}
+
+          state = handle_key_locking(state, key, keycode)
+
+          state = ApplyKeycode.apply_keycode(keycode, state, key)
+
+          report!(state)
+
+        %{} = waiting_on when map_size(waiting_on) == 0 ->
+          state
+
+        _else ->
+          state
+      end
+
+    send(self(), :flush)
+
+    {:noreply, %{state | pending_messages: state.pending_messages ++ [message]}}
+  end
+
+  @doc false
+  def handle_info(:flush, %{pending_messages: []} = state) do
+    {:noreply, state}
+  end
+
+  def handle_info(:flush, state) do
+    if state.waiting_on != %{} do
+      {:noreply, state}
+    else
+      [message | rest] = state.pending_messages
+
+      state =
+        case message do
+          {:press_key, key} ->
+            handle_press_key(key, state)
+
+          {:release_key, key} ->
+            handle_release_key(key, state)
+        end
+
+      send(self(), :flush)
+
+      {:noreply, %{state | pending_messages: rest}}
+    end
+  end
+
+  def handle_info({:clear_wait, message}, state) do
+    send(self(), :flush)
+
+    %{waiting_on: %{^message => callbacks}} = state
+    {key, keycode} = callbacks.timeout.()
+    state = %{state | waiting_on: Map.delete(state.waiting_on, message)}
+
+    # overwrites pressed key with resolved keycode
     state = %{state | keys: Map.put(state.keys, key, keycode)}
+
     state = handle_key_locking(state, key, keycode)
 
     state = ApplyKeycode.apply_keycode(keycode, state, key)
@@ -136,27 +204,20 @@ defmodule AFK.State do
     {:noreply, state}
   end
 
-  @doc false
-  def handle_cast({:release_key, key}, %__MODULE__{} = state) do
-    if !Map.has_key?(state.keys, key), do: raise("Unpressed key released! #{key}")
+  defp handle_press_key(key, state) do
+    if Map.has_key?(state.keys, key), do: raise("Already pressed key pressed again! #{key}")
 
-    %{^key => keycode} = state.keys
-    keys = Map.delete(state.keys, key)
-    state = %{state | keys: keys}
+    keycode = Keymap.find_keycode(state.keymap, key)
+    state = %{state | keys: Map.put(state.keys, key, keycode)}
+    state = handle_key_locking(state, key, keycode)
 
-    state =
-      if keycode in Keyword.get_values(state.locked_keys, key) do
-        state
-      else
-        ApplyKeycode.unapply_keycode(keycode, state, key)
-      end
+    state = ApplyKeycode.apply_keycode(keycode, state, key)
 
-    state = report!(state)
-
-    {:noreply, state}
+    report!(state)
   end
 
   defp handle_key_locking(state, _key, %AFK.Keycode.KeyLock{}), do: state
+  defp handle_key_locking(state, _key, %AFK.Keycode.TapKey{}), do: state
 
   defp handle_key_locking(%__MODULE__{pending_lock?: true} = state, key, keycode) do
     locked_keys = [{key, keycode} | state.locked_keys]
@@ -176,6 +237,23 @@ defmodule AFK.State do
     else
       state
     end
+  end
+
+  defp handle_release_key(key, state) do
+    if !Map.has_key?(state.keys, key), do: raise("Unpressed key released! #{key}")
+
+    %{^key => keycode} = state.keys
+    keys = Map.delete(state.keys, key)
+    state = %{state | keys: keys}
+
+    state =
+      if keycode in Keyword.get_values(state.locked_keys, key) do
+        state
+      else
+        ApplyKeycode.unapply_keycode(keycode, state, key)
+      end
+
+    report!(state)
   end
 
   defp report!(state) do

@@ -35,31 +35,92 @@ defmodule AFK.ApplyKeycode.KeyTest do
 
   @moduletag keymap: @keymap
 
-  test "press and release a", %{state: state} do
-    State.press_key(state, :k001)
-    State.release_key(state, :k001)
+  describe "a single key" do
+    @describetag keymap: [%{k001: @a}]
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {0, 0, 0, 0, 0, 0}}
-    ])
+    test "press a", %{state: state} do
+      simulate_events(state, [
+        {:press, :k001}
+      ])
+
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}}
+      ])
+    end
+
+    test "press and release a", %{state: state} do
+      simulate_events(state, [
+        {:press, :k001},
+        {:release, :k001}
+      ])
+
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}}
+      ])
+    end
+
+    test "hold a", %{state: state} do
+      simulate_events(state, [
+        {:press, :k001, 10}
+      ])
+
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}}
+      ])
+    end
+
+    test "hold a then release", %{state: state} do
+      simulate_events(state, [
+        {:press, :k001, 10},
+        {:release, :k001}
+      ])
+
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}}
+      ])
+    end
   end
 
-  test "activating the same keycode using two different physical keys", %{state: state} do
-    State.press_key(state, :k001)
-    # a is only pressed once
-    State.press_key(state, :k010)
-    # releasing the second instance of a doesn't release a
-    State.release_key(state, :k010)
-    # releasing the original instance of a releases it
-    State.release_key(state, :k001)
+  describe "the same keycode on two different physical keys" do
+    @describetag keymap: [%{k001: @a, k002: @a}]
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      # Because no state is changing with the second press of @a, no new events
-      # are sent.
-      %{keys: {0, 0, 0, 0, 0, 0}}
-    ])
+    test "a is only pressed once", %{state: state} do
+      simulate_events(state, [
+        {:press, :k001},
+        {:press, :k002}
+      ])
+
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}}
+      ])
+    end
+
+    test "a is not released by key 2", %{state: state} do
+      simulate_events(state, [
+        {:press, :k001},
+        {:press, :k002},
+        {:release, :k002}
+      ])
+
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}}
+      ])
+    end
+
+    test "a is released by key 1", %{state: state} do
+      simulate_events(state, [
+        {:press, :k001},
+        {:press, :k002},
+        {:release, :k001}
+      ])
+
+      assert_hid_reports([
+        %{keys: {@a, 0, 0, 0, 0, 0}},
+        %{keys: {0, 0, 0, 0, 0, 0}}
+      ])
+    end
   end
 
   test "pressing more than 6 keys causes later presses to be ignored", %{state: state} do

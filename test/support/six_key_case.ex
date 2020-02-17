@@ -25,6 +25,7 @@ defmodule AFK.SixKeyCase do
     ]
 
     {:ok, state} = State.start_link(args)
+
     %{state: state}
   end
 
@@ -76,5 +77,30 @@ defmodule AFK.SixKeyCase do
         Process.sleep(10)
         do_assert_reports(expected_reports, limit)
     end
+  end
+
+  @type event :: :press | :release
+
+  @spec simulate_events(state :: pid, events :: [{event, atom} | {event, atom, pos_integer}]) :: :ok
+  def simulate_events(state, events) do
+    for event <- events do
+      case event do
+        {:press, key} ->
+          State.press_key(state, key)
+
+        {:press, key, sleep} ->
+          State.press_key(state, key)
+          Process.sleep(sleep)
+
+        {:release, key} ->
+          State.release_key(state, key)
+
+        {:release, key, sleep} ->
+          State.release_key(state, key)
+          Process.sleep(sleep)
+      end
+    end
+
+    :ok
   end
 end
