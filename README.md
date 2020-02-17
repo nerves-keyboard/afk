@@ -50,26 +50,33 @@ keymap = [
 ]
 ```
 
-You can now initialize an `AFK.State` struct and press and release keys. Using
-an implementation of the `AFK.HIDReport` behaviour and calling `hid_report/1`
-returns a byte string for sending to a USB HID interface.
+You can now start a state process using `AFK.State.start_link/2`, by providing a
+keymap, an event receiver PID, and a module that implements the `AFK.HIDReport`
+behaviour.
 
 ```elixir
-state = AFK.State.new(keymap)
+{:ok, state} =
+  AFK.State.start_link(
+    keymap: keymap,
+    event_receiver: self(),
+    hid_report_mod: AFK.HIDReport.SixKeyRollover
+  )
 
-state =
-  state
-  |> AFK.State.press_key(:k003)
-  |> AFK.State.press_key(:k002)
-  |> AFK.State.press_key(:k001)
+AFK.State.press_key(state, :k003)
+AFK.State.press_key(state, :k002)
+AFK.State.press_key(state, :k001)
+AFK.State.release_key(state, :k002)
 
-AFK.HIDReport.SixKeyRollover.hid_report(state)
-# => <<128, 0, 29, 0, 0, 0, 0, 0>>
+# take a look at our process mailbox
+:erlang.process_info(self(), :messages)
 
-state = AFK.State.release_key(state, :k002)
-
-AFK.HIDReport.SixKeyRollover.hid_report(state)
-# => <<0, 0, 29, 0, 0, 0, 0, 0>>
+# {:messages,
+#  [
+#    hid_report: <<0, 0, 0, 0, 0, 0, 0, 0>>,
+#    hid_report: <<128, 0, 0, 0, 0, 0, 0, 0>>,
+#    hid_report: <<128, 0, 29, 0, 0, 0, 0, 0>>,
+#    hid_report: <<0, 0, 29, 0, 0, 0, 0, 0>>
+#  ]}
 ```
 
 ## Future Features
