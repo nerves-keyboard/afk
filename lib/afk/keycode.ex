@@ -13,9 +13,9 @@ defmodule AFK.Keycode do
   * `AFK.Keycode.Transparent` - A key that is transparent to its layer
   """
 
-  alias __MODULE__.{Key, KeyLock, Layer, Modifier, None, Transparent}
+  alias __MODULE__.{Key, KeyLock, Layer, MFA, Modifier, None, Transparent}
 
-  @type t :: Key.t() | KeyLock.t() | Layer.t() | Modifier.t() | None.t() | Transparent.t()
+  @type t :: Key.t() | KeyLock.t() | Layer.t() | MFA.t() | Modifier.t() | None.t() | Transparent.t()
 
   @type with_scancode :: Key.t() | Modifier.t()
 end
