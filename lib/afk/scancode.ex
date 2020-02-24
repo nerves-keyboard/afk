@@ -224,6 +224,40 @@ defmodule AFK.Scancode do
     # 0xDB - Keypad Octal
     # 0xDC - Keypad Decimal
     # 0xDD - Keypad Hexadecimal
+    # 0xDE - ???
+    # 0xDF - ???
+    # 0xE0 - Keyboard Left Control
+    # 0xE1 - Keyboard Left Shift
+    # 0xE2 - Keyboard Left Alt
+    # 0xE3 - Keyboard Left GUI
+    # 0xE4 - Keyboard Right Control
+    # 0xE5 - Keyboard Right Shift
+    # 0xE6 - Keyboard Right Alt
+    # 0xE7 - Keyboard Right GUI
+    # 0xE8 - Media Play/Pause
+    # 0xE9 - Media Stop
+    # 0xEA - Media Previous
+    # 0xEB - Media Next
+    # 0xEC - Media Eject
+    # 0xED - Media Volume Up
+    # 0xEE - Media Volume Down
+    # 0xEF - Media Mute
+    # 0xF0 - Media www
+    # 0xF1 - Media Back
+    # 0xF2 - Media Forward
+    # 0xF3 - Media Stop
+    # 0xF4 - Media Find
+    # 0xF5 - Media Scroll Up
+    # 0xF6 - Media Scroll Down
+    # 0xF7 - Media Edit
+    # 0xF8 - Media Sleep
+    # 0xF9 - Media Coffee
+    # 0xFA - Media Refresh
+    # 0xFB - Media Calc
+    # 0xFC - ???
+    # 0xFD - ???
+    # 0xFE - ???
+    # 0xFF - ???
   ]
 
   @modifiers [
