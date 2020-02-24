@@ -81,7 +81,7 @@ defmodule AFK.Scancode do
     {0x51, :down},
     {0x52, :up},
     {0x65, :application},
-    {0x79, :mute},
+    {0x7F, :mute},
     {0x80, :volume_up},
     {0x81, :volume_down}
   ]
