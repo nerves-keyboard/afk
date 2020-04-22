@@ -4,12 +4,12 @@ defmodule AFK.SixKeyCase do
   use ExUnit.CaseTemplate
   use Bitwise
 
+  import AFK.Scancode, only: [scancode: 1]
+
   alias AFK.HIDReport.SixKeyRollover
   alias AFK.Keycode.Key
   alias AFK.Keycode.Modifier
   alias AFK.State
-
-  import AFK.Scancode, only: [scancode: 1]
 
   using do
     quote do
