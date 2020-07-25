@@ -33,7 +33,7 @@ defmodule AFK.SixKeyCase do
   @type mods :: [AFK.Keycode.Modifier.t()]
   @type report :: %{optional(:keys) => keys, optional(:mods) => mods}
 
-  @spec assert_hid_reports(reports :: [report], timeout :: non_neg_integer) :: :ok
+  @spec assert_hid_reports(reports :: [report], timeout :: non_neg_integer) :: true
   def assert_hid_reports(reports, timeout \\ 100) do
     limit = :os.system_time(:millisecond) + timeout
 
