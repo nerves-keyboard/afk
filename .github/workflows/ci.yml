@@ -128,9 +128,9 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: plts
-          key: ${{ runner.os }}-plts-v4-${{ hashFiles('lib/**/*.ex') }}${{ hashFiles('test/**/*.ex') }}${{ hashFiles('mix.lock') }}
+          key: ${{ runner.os }}-plts-v5-${{ hashFiles('lib/**/*.ex') }}${{ hashFiles('test/**/*.ex') }}${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-plts-v4-
+            ${{ runner.os }}-plts-v5-
       - name: Install dependencies
         run: mix deps.get
       - name: Compile
