@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-elixir@v1.2.0
+      - uses: actions/setup-elixir@v1.3
         with:
           otp-version: 22.x
           elixir-version: 1.9.x
@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-elixir@v1.2.0
+      - uses: actions/setup-elixir@v1.3
         with:
           otp-version: 22.x
           elixir-version: 1.9.x
@@ -61,7 +61,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-elixir@v1.2.0
+      - uses: actions/setup-elixir@v1.3
         with:
           otp-version: 22.x
           elixir-version: 1.9.x
@@ -89,7 +89,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-elixir@v1.2.0
+      - uses: actions/setup-elixir@v1.3
         with:
           otp-version: 22.x
           elixir-version: 1.9.x
@@ -114,7 +114,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-elixir@v1.2.0
+      - uses: actions/setup-elixir@v1.3
         with:
           otp-version: 22.x
           elixir-version: 1.9.x
