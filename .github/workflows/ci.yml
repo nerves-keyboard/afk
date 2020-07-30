@@ -43,7 +43,7 @@ jobs:
           echo ::set-output name=lockfile_key::${{ hashFiles('mix.lock') }}
           echo ::set-output name=build_key::build-${{ runner.os }}-${{ env.MIX_ENV }}
           echo ::set-output name=version_key::${{ steps.setup.outputs['otp-version'] }}-${{ steps.setup.outputs['elixir-version'] }}
-          echo ::set-output name=files_key::${{ hashFiles('{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
+          echo ::set-output name=files_key::${{ hashFiles('lib/**/*.ex','test/**/*.ex','mix.lock') }}
       - uses: actions/cache@v2.1.0
         id: deps_cache
         with:
@@ -88,7 +88,7 @@ jobs:
           echo ::set-output name=lockfile_key::${{ hashFiles('mix.lock') }}
           echo ::set-output name=build_key::build-${{ runner.os }}-${{ env.MIX_ENV }}
           echo ::set-output name=version_key::${{ steps.setup.outputs['otp-version'] }}-${{ steps.setup.outputs['elixir-version'] }}
-          echo ::set-output name=files_key::${{ hashFiles('{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
+          echo ::set-output name=files_key::${{ hashFiles('lib/**/*.ex','test/**/*.ex','mix.lock') }}
       - uses: actions/cache@v2.1.0
         id: deps_cache
         with:
@@ -139,7 +139,7 @@ jobs:
           echo ::set-output name=lockfile_key::${{ hashFiles('mix.lock') }}
           echo ::set-output name=build_key::build-${{ runner.os }}-${{ env.MIX_ENV }}
           echo ::set-output name=version_key::${{ steps.setup.outputs['otp-version'] }}-${{ steps.setup.outputs['elixir-version'] }}
-          echo ::set-output name=files_key::${{ hashFiles('{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
+          echo ::set-output name=files_key::${{ hashFiles('lib/**/*.ex','test/**/*.ex','mix.lock') }}
       - uses: actions/cache@v2.1.0
         id: deps_cache
         with:
@@ -188,7 +188,7 @@ jobs:
           echo ::set-output name=lockfile_key::${{ hashFiles('mix.lock') }}
           echo ::set-output name=build_key::build-${{ runner.os }}-${{ env.MIX_ENV }}
           echo ::set-output name=version_key::${{ steps.setup.outputs['otp-version'] }}-${{ steps.setup.outputs['elixir-version'] }}
-          echo ::set-output name=files_key::${{ hashFiles('{lib/**/*.ex,test/**/*.ex,mix.lock}') }}
+          echo ::set-output name=files_key::${{ hashFiles('lib/**/*.ex','test/**/*.ex','mix.lock') }}
       - uses: actions/cache@v2.1.0
         id: deps_cache
         with:
