@@ -12,7 +12,6 @@ defmodule AFK.Keycode.Transparent do
   @doc """
   Creates a `Transparent` keycode.
 
-
   ## Examples
 
       iex> new()

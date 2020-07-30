@@ -5,7 +5,6 @@
 [![SourceLevel](https://app.sourcelevel.io/github/doughsay/afk.svg)](https://app.sourcelevel.io/github/doughsay/afk)
 [![Hex.pm Version](https://img.shields.io/hexpm/v/afk.svg?style=flat)](https://hex.pm/packages/afk)
 [![License](https://img.shields.io/hexpm/l/afk.svg)](LICENSE.md)
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=doughsay/afk)](https://dependabot.com)
 
 A library for modeling the internal state of a computer keyboard. It supports
 arbitrary layouts with any number of layers, and outputs a basic 6-key HID
