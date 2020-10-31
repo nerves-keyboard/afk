@@ -1,8 +1,8 @@
 # AFK
 
-[![CI Status](https://github.com/doughsay/afk/workflows/CI/badge.svg)](https://github.com/doughsay/afk/actions)
-[![codecov](https://codecov.io/gh/doughsay/afk/branch/master/graph/badge.svg)](https://codecov.io/gh/doughsay/afk)
-[![SourceLevel](https://app.sourcelevel.io/github/doughsay/afk.svg)](https://app.sourcelevel.io/github/doughsay/afk)
+[![CI Status](https://github.com/nerves-keyboard/afk/workflows/CI/badge.svg)](https://github.com/nerves-keyboard/afk/actions)
+[![codecov](https://codecov.io/gh/nerves-keyboard/afk/branch/main/graph/badge.svg)](https://codecov.io/gh/nerves-keyboard/afk)
+[![SourceLevel](https://app.sourcelevel.io/github/nerves-keyboard/afk.svg)](https://app.sourcelevel.io/github/nerves-keyboard/afk)
 [![Hex.pm Version](https://img.shields.io/hexpm/v/afk.svg?style=flat)](https://hex.pm/packages/afk)
 [![License](https://img.shields.io/hexpm/l/afk.svg)](LICENSE.md)
 
@@ -10,9 +10,7 @@ A library for modeling the internal state of a computer keyboard. It supports
 arbitrary layouts with any number of layers, and outputs a basic 6-key HID
 report byte string.
 
-Its intended use is to model the state for keyboard firmware. A work-in-progress
-firmware using Nerves is being attempted [over
-here](https://github.com/doughsay/keyboard).
+Its intended use is to model the state for keyboard firmware.
 
 ## Installation
 

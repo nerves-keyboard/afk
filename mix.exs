@@ -4,7 +4,7 @@ defmodule AFK.MixProject do
   use Mix.Project
 
   @version "0.3.0"
-  @source_url "https://github.com/doughsay/afk"
+  @source_url "https://github.com/nerves-keyboard/afk"
 
   def project do
     [
@@ -44,8 +44,7 @@ defmodule AFK.MixProject do
 
   defp dialyzer do
     [
-      plt_core_path: "_build/#{Mix.env()}",
-      flags: [:unmatched_returns, :error_handling, :underspecs]
+      plt_core_path: "_build/#{Mix.env()}"
     ]
   end
 
@@ -62,14 +61,14 @@ defmodule AFK.MixProject do
       licenses: ["MIT"],
       links: %{
         "GitHub" => @source_url,
-        "Readme" => "#{@source_url}/blob/#{@version}/README.md"
+        "Readme" => "#{@source_url}/blob/v#{@version}/README.md"
       }
     ]
   end
 
   defp docs do
     [
-      source_ref: @version,
+      source_ref: "v#{@version}",
       source_url: @source_url,
       extras: [
         "README.md": [title: "README"],
@@ -81,7 +80,7 @@ defmodule AFK.MixProject do
   defp deps do
     [
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test}
     ]
