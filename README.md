@@ -18,7 +18,7 @@ AFK can be installed by adding `afk` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:afk, "~> 0.1.0"}
+    {:afk, "~> 0.3"}
   ]
 end
 ```
