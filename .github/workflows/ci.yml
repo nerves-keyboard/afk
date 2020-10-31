@@ -5,7 +5,7 @@ on: push
 env:
   MIX_ENV: test
   OTP_VERSION_SPEC: "23.x"
-  ELIXIR_VERSION_SPEC: "1.10.x"
+  ELIXIR_VERSION_SPEC: "1.11.x"
 
 jobs:
   format:
@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: doughsay/setup-elixir@1148b8ff819424a2efa48ff89af3ccc114c1fc39
+      - uses: actions/setup-elixir@v1.4.2
         id: setup
         with:
           otp-version: ${{ env.OTP_VERSION_SPEC }}
@@ -31,7 +31,7 @@ jobs:
     steps:
       # shared steps
       - uses: actions/checkout@v2
-      - uses: doughsay/setup-elixir@1148b8ff819424a2efa48ff89af3ccc114c1fc39
+      - uses: actions/setup-elixir@v1.4.2
         id: setup
         with:
           otp-version: ${{ env.OTP_VERSION_SPEC }}
@@ -76,7 +76,7 @@ jobs:
     steps:
       # shared steps
       - uses: actions/checkout@v2
-      - uses: doughsay/setup-elixir@1148b8ff819424a2efa48ff89af3ccc114c1fc39
+      - uses: actions/setup-elixir@v1.4.2
         id: setup
         with:
           otp-version: ${{ env.OTP_VERSION_SPEC }}
@@ -127,7 +127,7 @@ jobs:
     steps:
       # shared steps
       - uses: actions/checkout@v2
-      - uses: doughsay/setup-elixir@1148b8ff819424a2efa48ff89af3ccc114c1fc39
+      - uses: actions/setup-elixir@v1.4.2
         id: setup
         with:
           otp-version: ${{ env.OTP_VERSION_SPEC }}
@@ -176,7 +176,7 @@ jobs:
     steps:
       # shared steps
       - uses: actions/checkout@v2
-      - uses: doughsay/setup-elixir@1148b8ff819424a2efa48ff89af3ccc114c1fc39
+      - uses: actions/setup-elixir@v1.4.2
         id: setup
         with:
           otp-version: ${{ env.OTP_VERSION_SPEC }}
