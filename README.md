@@ -2,7 +2,6 @@
 
 [![CI Status](https://github.com/nerves-keyboard/afk/workflows/CI/badge.svg)](https://github.com/nerves-keyboard/afk/actions)
 [![codecov](https://codecov.io/gh/nerves-keyboard/afk/branch/main/graph/badge.svg)](https://codecov.io/gh/nerves-keyboard/afk)
-[![SourceLevel](https://app.sourcelevel.io/github/nerves-keyboard/afk.svg)](https://app.sourcelevel.io/github/nerves-keyboard/afk)
 [![Hex.pm Version](https://img.shields.io/hexpm/v/afk.svg?style=flat)](https://hex.pm/packages/afk)
 [![License](https://img.shields.io/hexpm/l/afk.svg)](LICENSE.md)
 
