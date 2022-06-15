@@ -274,7 +274,7 @@ defmodule AFK.Scancode do
   @type t ::
           unquote(
             Enum.reduce(
-              Enum.uniq(Enum.map(@keys(), &elem(&1, 0)) ++ Enum.map(@modifiers(), &elem(&1, 0))),
+              Enum.uniq(Enum.map(@keys, &elem(&1, 0)) ++ Enum.map(@modifiers, &elem(&1, 0))),
               &{:|, [], [&1, &2]}
             )
           )
