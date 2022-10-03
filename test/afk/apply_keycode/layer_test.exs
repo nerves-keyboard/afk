@@ -85,9 +85,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
   test "the first layer is considered default and always active", %{state: state} do
     State.press_key(state, :k004)
 
-    assert_hid_reports([
-      %{keys: {@q, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@q, 0, 0, 0, 0, 0}}
   end
 
   describe "while holding layer 1 activation key" do
@@ -100,25 +98,21 @@ defmodule AFK.ApplyKeycode.LayerTest do
     test "press a regular key", %{state: state} do
       State.press_key(state, :k004)
 
-      assert_hid_reports([
-        %{keys: {@a, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@a, 0, 0, 0, 0, 0}}
     end
 
     test "press a none key", %{state: state} do
       State.press_key(state, :k003)
 
       # has no effect (does not fall through to lower level)
-      assert_hid_reports([])
+      refute_hid_reports()
     end
 
     test "press a transparent key", %{state: state} do
       State.press_key(state, :k006)
 
       # falls through to lower active layer (0)
-      assert_hid_reports([
-        %{keys: {@e, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@e, 0, 0, 0, 0, 0}}
     end
 
     test "let go of layer 1 activation key", %{state: state} do
@@ -126,9 +120,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k004)
 
       # layer 1 no longer active, so this is layer 0 (default)
-      assert_hid_reports([
-        %{keys: {@q, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@q, 0, 0, 0, 0, 0}}
     end
   end
 
@@ -143,27 +135,21 @@ defmodule AFK.ApplyKeycode.LayerTest do
     test "press a regular key", %{state: state} do
       State.press_key(state, :k004)
 
-      assert_hid_reports([
-        %{keys: {@z, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@z, 0, 0, 0, 0, 0}}
     end
 
     test "press a transparent key that falls to layer 1 (still active)", %{state: state} do
       State.press_key(state, :k005)
 
       # falls through to lower active layer (1)
-      assert_hid_reports([
-        %{keys: {@s, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@s, 0, 0, 0, 0, 0}}
     end
 
     test "press a transparent key that falls to layer 0 (default)", %{state: state} do
       State.press_key(state, :k006)
 
       # falls through two layers to default layer (0)
-      assert_hid_reports([
-        %{keys: {@e, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@e, 0, 0, 0, 0, 0}}
     end
 
     test "let go of layer 1 activation key and press a transparent key that falls to layer 1", %{
@@ -173,9 +159,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k005)
 
       # layer 1 is no longer active, so it skips layer 1 and uses 0
-      assert_hid_reports([
-        %{keys: {@w, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@w, 0, 0, 0, 0, 0}}
     end
 
     test "activating layer 1 a second time", %{state: state} do
@@ -195,14 +179,14 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.press_key(state, :k005)
       State.release_key(state, :k005)
 
-      assert_hid_reports([
+      assert_hid_reports [
         %{keys: {@s, 0, 0, 0, 0, 0}},
         %{keys: {0, 0, 0, 0, 0, 0}},
         %{keys: {@s, 0, 0, 0, 0, 0}},
         %{keys: {0, 0, 0, 0, 0, 0}},
         %{keys: {@w, 0, 0, 0, 0, 0}},
         %{keys: {0, 0, 0, 0, 0, 0}}
-      ])
+      ]
     end
   end
 
@@ -217,9 +201,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
     test "layer 1 is active", %{state: state} do
       State.press_key(state, :k004)
 
-      assert_hid_reports([
-        %{keys: {@a, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@a, 0, 0, 0, 0, 0}}
     end
 
     test "toggling layer 1 again deactivates", %{state: state} do
@@ -227,9 +209,7 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.release_key(state, :k007)
       State.press_key(state, :k004)
 
-      assert_hid_reports([
-        %{keys: {@q, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@q, 0, 0, 0, 0, 0}}
     end
   end
 
@@ -239,18 +219,14 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.release_key(state, :k008)
       State.press_key(state, :k001)
 
-      assert_hid_reports([
-        %{keys: {@one, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@one, 0, 0, 0, 0, 0}}
     end
 
     test "switches the default layer as soon as it's pressed", %{state: state} do
       State.press_key(state, :k008)
       State.press_key(state, :k001)
 
-      assert_hid_reports([
-        %{keys: {@one, 0, 0, 0, 0, 0}}
-      ])
+      assert_hid_report %{keys: {@one, 0, 0, 0, 0, 0}}
     end
 
     test "switch to layer 3 as the default layer then back to 1", %{state: state} do
@@ -261,10 +237,10 @@ defmodule AFK.ApplyKeycode.LayerTest do
       State.release_key(state, :k008)
       State.press_key(state, :k004)
 
-      assert_hid_reports([
+      assert_hid_reports [
         %{keys: {@one, 0, 0, 0, 0, 0}},
         %{keys: {@one, @q, 0, 0, 0, 0}}
-      ])
+      ]
     end
   end
 end

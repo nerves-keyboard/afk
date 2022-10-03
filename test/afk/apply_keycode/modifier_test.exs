@@ -37,10 +37,10 @@ defmodule AFK.ApplyKeycode.ModifierTest do
     State.press_key(state, :k001)
     State.release_key(state, :k001)
 
-    assert_hid_reports([
+    assert_hid_reports [
       %{mods: [@left_control]},
       %{mods: []}
-    ])
+    ]
   end
 
   test "activating the same modifier using two different physical keys", %{state: state} do
@@ -48,24 +48,16 @@ defmodule AFK.ApplyKeycode.ModifierTest do
     State.press_key(state, :k009)
 
     # left control is active
-    assert_hid_reports([
-      %{mods: [@left_control]}
-    ])
+    assert_hid_report %{mods: [@left_control]}
 
     # releasing the second instance of left control doesn't release it
     State.release_key(state, :k009)
-
-    assert_hid_reports([
-      %{mods: [@left_control]}
-    ])
+    refute_hid_reports()
 
     # releasing the original instance of left control releases it
     State.release_key(state, :k001)
 
-    assert_hid_reports([
-      %{mods: [@left_control]},
-      %{mods: []}
-    ])
+    assert_hid_report %{mode: []}
   end
 
   test "press and release multiple modifiers", %{state: state} do
@@ -77,13 +69,13 @@ defmodule AFK.ApplyKeycode.ModifierTest do
     State.release_key(state, :k002)
     State.release_key(state, :k007)
 
-    assert_hid_reports([
+    assert_hid_reports [
       %{mods: [@left_control]},
       %{mods: [@left_control, @left_shift]},
       %{mods: [@left_control, @left_shift, @right_alt]},
       %{mods: [@left_control, @left_shift, @right_alt, @right_super]},
       %{mods: [@left_control, @right_alt, @right_super]},
       %{mods: [@left_control, @right_super]}
-    ])
+    ]
   end
 end

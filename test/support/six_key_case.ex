@@ -2,9 +2,9 @@ defmodule AFK.SixKeyCase do
   @moduledoc false
 
   use ExUnit.CaseTemplate
-  use Bitwise
 
   import AFK.Scancode, only: [scancode: 1]
+  import Bitwise
 
   alias AFK.HIDReport.SixKeyRollover
   alias AFK.Keycode.Key
@@ -25,6 +25,10 @@ defmodule AFK.SixKeyCase do
     ]
 
     {:ok, state} = State.start_link(args)
+
+    # assert the initial "clean state" report is sent
+    assert_hid_report %{}
+
     %{state: state}
   end
 
@@ -33,10 +37,13 @@ defmodule AFK.SixKeyCase do
   @type mods :: [AFK.Keycode.Modifier.t()]
   @type report :: %{optional(:keys) => keys, optional(:mods) => mods}
 
-  @spec assert_hid_reports(reports :: [report], timeout :: non_neg_integer) :: true
-  def assert_hid_reports(reports, timeout \\ 100) do
-    limit = :os.system_time(:millisecond) + timeout
+  @spec assert_hid_report(report :: report, timeout :: non_neg_integer) :: true
+  def assert_hid_report(report, timeout \\ 10) do
+    assert_hid_reports [report], timeout
+  end
 
+  @spec assert_hid_reports(reports :: [report], timeout :: non_neg_integer) :: true
+  def assert_hid_reports(reports, timeout \\ 10) do
     expected_reports =
       Enum.map(reports, fn report ->
         keys = Map.get(report, :keys, {0, 0, 0, 0, 0, 0})
@@ -55,26 +62,14 @@ defmodule AFK.SixKeyCase do
         <<modifier_byte, 0, one, two, three, four, five, six>>
       end)
 
-    do_assert_reports([<<0, 0, 0, 0, 0, 0, 0, 0>> | expected_reports], limit)
+    for expected_report <- expected_reports do
+      assert_receive {:hid_report, ^expected_report}, timeout
+    end
   end
 
-  defp do_assert_reports(expected_reports, limit) do
-    {:messages, messages} = :erlang.process_info(self(), :messages)
-    received_reports = Enum.map(messages, fn {:hid_report, report} -> report end)
-
-    cond do
-      expected_reports == received_reports ->
-        assert expected_reports == received_reports
-
-      # coveralls-ignore-start
-      :os.system_time(:millisecond) + 10 >= limit ->
-        assert expected_reports == received_reports
-
-      # coveralls-ignore-stop
-
-      true ->
-        Process.sleep(10)
-        do_assert_reports(expected_reports, limit)
-    end
+  # Asserts that no hid reports are being received within timeout
+  @spec refute_hid_reports(timeout :: non_neg_integer) :: true
+  def refute_hid_reports(timeout \\ 10) do
+    refute_receive {:hid_report, _}, timeout
   end
 end

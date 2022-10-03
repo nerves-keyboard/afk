@@ -30,13 +30,13 @@ defmodule AFK.ApplyKeycode.NoneTest do
     State.press_key(state, :k001)
     State.release_key(state, :k001)
 
-    assert_hid_reports([])
+    refute_hid_reports()
   end
 
   test "pressing a non-existent key is treated as a none key-press", %{state: state} do
     State.press_key(state, :k010)
 
-    assert_hid_reports([])
+    refute_hid_reports()
   end
 
   test "pressing 6 none keys doesn't fill up the HID buffer", %{state: state} do
@@ -45,12 +45,12 @@ defmodule AFK.ApplyKeycode.NoneTest do
       &State.press_key(state, &1)
     )
 
+    refute_hid_reports()
+
     # all positions are still considered open, even though 6 keys are being
     # pressed
     State.press_key(state, :k007)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@a, 0, 0, 0, 0, 0}}
   end
 end
