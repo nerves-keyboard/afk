@@ -42,12 +42,10 @@ defmodule AFK.StateTest do
     State.press_key(state, :k001)
     State.press_key(state, :k001)
 
-    assert_receive(
-      {:EXIT, ^state,
-       {%RuntimeError{
-          message: "Already pressed key pressed again! k001"
-        }, _}}
-    )
+    assert_receive {:EXIT, ^state,
+                    {%RuntimeError{
+                       message: "Already pressed key pressed again! k001"
+                     }, _}}
   end
 
   @tag :capture_log
@@ -58,11 +56,9 @@ defmodule AFK.StateTest do
     State.release_key(state, :k001)
     State.release_key(state, :k001)
 
-    assert_receive(
-      {:EXIT, ^state,
-       {%RuntimeError{
-          message: "Unpressed key released! k001"
-        }, _}}
-    )
+    assert_receive {:EXIT, ^state,
+                    {%RuntimeError{
+                       message: "Unpressed key released! k001"
+                     }, _}}
   end
 end

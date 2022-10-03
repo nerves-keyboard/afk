@@ -11,9 +11,8 @@ defmodule AFK.HIDReport.SixKeyRollover do
 
   @behaviour AFK.HIDReport
 
-  use Bitwise
-
   import AFK.Scancode, only: [scancode: 1]
+  import Bitwise
 
   @impl AFK.HIDReport
   @spec hid_report(state :: AFK.State.t()) :: <<_::64>>

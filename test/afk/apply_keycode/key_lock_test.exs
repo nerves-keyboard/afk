@@ -43,7 +43,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k001)
     State.release_key(state, :k001)
 
-    assert_hid_reports([])
+    refute_hid_reports()
   end
 
   test "locking and unlocking a regular key", %{state: state} do
@@ -52,22 +52,15 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k002)
     State.release_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@a, 0, 0, 0, 0, 0}}
 
     State.press_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    refute_hid_reports()
 
     State.release_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {0, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {0, 0, 0, 0, 0, 0}}
   end
 
   test "locking and unlocking a modifier key", %{state: state} do
@@ -76,22 +69,15 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k004)
     State.release_key(state, :k004)
 
-    assert_hid_reports([
-      %{mods: [@left_control]}
-    ])
+    assert_hid_report %{mods: [@left_control]}
 
     State.press_key(state, :k004)
 
-    assert_hid_reports([
-      %{mods: [@left_control]}
-    ])
+    refute_hid_reports()
 
     State.release_key(state, :k004)
 
-    assert_hid_reports([
-      %{mods: [@left_control]},
-      %{mods: []}
-    ])
+    assert_hid_report %{mods: []}
   end
 
   test "locking while holding lock", %{state: state} do
@@ -99,29 +85,19 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k002)
     State.release_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@a, 0, 0, 0, 0, 0}}
 
     State.press_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    refute_hid_reports()
 
     State.release_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {0, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {0, 0, 0, 0, 0, 0}}
 
     State.release_key(state, :k001)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {0, 0, 0, 0, 0, 0}}
-    ])
+    refute_hid_reports()
   end
 
   test "locking and unlocking the same physical key on different layers", %{state: state} do
@@ -132,9 +108,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k002)
     State.release_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@a, 0, 0, 0, 0, 0}}
 
     # activate layer 1
     State.press_key(state, :k003)
@@ -147,20 +121,13 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     # release layer 1
     State.release_key(state, :k003)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {@a, @b, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@a, @b, 0, 0, 0, 0}}
 
     # unlock 'a' by tapping it again
     State.press_key(state, :k002)
     State.release_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {@a, @b, 0, 0, 0, 0}},
-      %{keys: {0, @b, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {0, @b, 0, 0, 0, 0}}
 
     # activate layer 1
     State.press_key(state, :k003)
@@ -170,12 +137,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     # release layer 1
     State.release_key(state, :k003)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {@a, @b, 0, 0, 0, 0}},
-      %{keys: {0, @b, 0, 0, 0, 0}},
-      %{keys: {0, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {0, 0, 0, 0, 0, 0}}
   end
 
   test "locking a key and using the same physical key on different layer", %{state: state} do
@@ -186,28 +148,19 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k002)
     State.release_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@a, 0, 0, 0, 0, 0}}
 
     # activate layer 1
     State.press_key(state, :k003)
     # press 'b' on layer 1
     State.press_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {@a, @b, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@a, @b, 0, 0, 0, 0}}
 
     # release 'b' on layer 1
     State.release_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@a, 0, 0, 0, 0, 0}},
-      %{keys: {@a, @b, 0, 0, 0, 0}},
-      %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@a, 0, 0, 0, 0, 0}}
   end
 
   test "locking and unlocking the same physical key (modifiers) on different layers", %{state: state} do
@@ -218,9 +171,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k004)
     State.release_key(state, :k004)
 
-    assert_hid_reports([
-      %{mods: [@left_control]}
-    ])
+    assert_hid_report %{mods: [@left_control]}
 
     # activate layer 1
     State.press_key(state, :k003)
@@ -233,20 +184,13 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     # release layer 1
     State.release_key(state, :k003)
 
-    assert_hid_reports([
-      %{mods: [@left_control]},
-      %{mods: [@left_control, @left_shift]}
-    ])
+    assert_hid_report %{mods: [@left_control, @left_shift]}
 
     # unlock 'left control' by tapping it again
     State.press_key(state, :k004)
     State.release_key(state, :k004)
 
-    assert_hid_reports([
-      %{mods: [@left_control]},
-      %{mods: [@left_control, @left_shift]},
-      %{mods: [@left_shift]}
-    ])
+    assert_hid_report %{mods: [@left_shift]}
 
     # activate layer 1
     State.press_key(state, :k003)
@@ -256,12 +200,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     # release layer 1
     State.release_key(state, :k003)
 
-    assert_hid_reports([
-      %{mods: [@left_control]},
-      %{mods: [@left_control, @left_shift]},
-      %{mods: [@left_shift]},
-      %{mods: []}
-    ])
+    assert_hid_report %{mods: []}
   end
 
   test "locking and unlocking layer hold", %{state: state} do
@@ -274,9 +213,7 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     # press 'b' on layer 1
     State.press_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@b, 0, 0, 0, 0, 0}}
-    ])
+    assert_hid_report %{keys: {@b, 0, 0, 0, 0, 0}}
 
     # release 'b'
     State.release_key(state, :k002)
@@ -286,11 +223,10 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     # press 'a' on layer 0
     State.press_key(state, :k002)
 
-    assert_hid_reports([
-      %{keys: {@b, 0, 0, 0, 0, 0}},
+    assert_hid_reports [
       %{keys: {0, 0, 0, 0, 0, 0}},
       %{keys: {@a, 0, 0, 0, 0, 0}}
-    ])
+    ]
   end
 
   test "tapping lock key again cancels pending lock", %{state: state} do
@@ -305,9 +241,9 @@ defmodule AFK.ApplyKeycode.KeyLockTest do
     State.press_key(state, :k002)
     State.release_key(state, :k002)
 
-    assert_hid_reports([
+    assert_hid_reports [
       %{keys: {@a, 0, 0, 0, 0, 0}},
       %{keys: {0, 0, 0, 0, 0, 0}}
-    ])
+    ]
   end
 end
